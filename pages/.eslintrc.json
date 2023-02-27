@@ -1,0 +1,12 @@
+{
+    "extends": "../.eslintrc.json",
+    "env": {
+        "browser": true
+    },
+    "globals": {
+        "flami": true,
+        "html": true,
+        "update": true,
+        "console": true
+    }
+}
