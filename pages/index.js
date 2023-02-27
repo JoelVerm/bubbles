@@ -18,7 +18,7 @@ flami(
                     --bg-1: #222;
                     --bg-2: #333;
                     --bg-3: #444;
-                    --col-1: #db5;
+                    --col-1: #5a2;
                 }
                 main {
                     display: flex;

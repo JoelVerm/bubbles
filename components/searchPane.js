@@ -46,7 +46,7 @@ export const page = () => html`
     <section class="searchPane">
         <style>
             .searchPane {
-                background-color: #222;
+                background-color: var(--bg-1);
                 display: flex;
                 flex-direction: column;
             }
@@ -55,7 +55,7 @@ export const page = () => html`
                 margin: 15px;
                 margin-bottom: 0;
                 padding: 0.5rem;
-                background-color: #444;
+                background-color: var(--bg-3);
                 outline: none;
                 border: none;
                 border-radius: 5px;
@@ -79,11 +79,14 @@ export const page = () => html`
                 margin-bottom: 15px;
                 margin-left: 15px;
                 padding: 0.5rem;
-                background-color: #333;
+                background-color: var(--bg-2);
                 border-radius: 5px;
             }
             .searchPane .results .result .tags {
                 margin-left: -15px;
+            }
+            .searchPane .results .tag {
+                color: var(--col-1);
             }
             .searchPane .tags .tagBar {
                 cursor: text;
