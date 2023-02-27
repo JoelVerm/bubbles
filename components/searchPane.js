@@ -116,7 +116,7 @@ export const page = () => html`
             class="searchBar"
             placeholder="Search text..."
             onkeyup=${e => {
-                searchTerm = e.target.value
+                searchTerm = e.target.value.trim()
                 search()
             }}
         />
@@ -127,7 +127,7 @@ export const page = () => html`
                 class="tag tagBar"
                 onfocusout=${e => {
                     if (!e.target.innerText) return
-                    searchTags.push(e.target.innerText)
+                    searchTags.push(e.target.innerText.trim())
                     e.target.innerText = ''
                     search()
                 }}
@@ -135,7 +135,7 @@ export const page = () => html`
                     if (e.key === 'Enter') {
                         e.preventDefault()
                         if (!e.target.innerText) return
-                        searchTags.push(e.target.innerText)
+                        searchTags.push(e.target.innerText.trim())
                         e.target.innerText = ''
                         search()
                     }
