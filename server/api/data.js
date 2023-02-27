@@ -34,7 +34,7 @@ export async function flami(req) {
                         .map((t, i) => `tags ?~ $t${i}`)
                         .join(
                             ', '
-                        )}]) AS matches FROM notes ORDER BY matches DESC LIMIT 50) WHERE matches >= $minTagCount AND content ~ $content`,
+                        )}]) AS matches FROM notes ORDER BY RAND() LIMIT 50) WHERE matches >= $minTagCount AND content ~ $content ORDER BY matches DESC`,
                     {
                         ...Object.fromEntries(
                             q.tags.map((t, i) => [`t${i}`, t])
