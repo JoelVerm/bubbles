@@ -25,17 +25,25 @@ export async function flami(req) {
             note = (await db.select(`notes:${q.id}`))[0]
             break
         case 'query':
-            let notesList = (
+            return (
                 await db.query(
                     `SELECT * FROM (SELECT *, count([${q.tags
                         .map((t, i) => `tags ?~ $t${i}`)
                         .join(
                             ', '
-                        )}]) AS matches FROM notes ORDER BY matches DESC LIMIT 50) WHERE matches > 0`,
-                    Object.fromEntries(q.tags.map((t, i) => [`t${i}`, t]))
+                        )}]) AS matches FROM notes ORDER BY matches DESC LIMIT 50) WHERE matches >= $minTagCount AND content ~ $content`,
+                    {
+                        ...Object.fromEntries(
+                            q.tags.map((t, i) => [`t${i}`, t])
+                        ),
+                        minTagCount: Math.round(q.tags.length / 2),
+                        content: q.content
+                    }
                 )
-            )[0].result
-            return notesList
+            )[0].result.map(e => {
+                e.id = e.id.split(':')[1]
+                return e
+            })
     }
     note.id = note.id.split(':')[1]
     if (note) return note
