@@ -130,6 +130,19 @@ export const page = () => html`
             >
                 <ion-icon name="checkmark-done-outline"></ion-icon>
             </div>
+            <div
+                class="deleteButton"
+                onclick=${async () => {
+                    await request({
+                        type: 'delete',
+                        id: data.id
+                    })
+                    data = createNoteData()
+                    search()
+                }}
+            >
+                <ion-icon name="trash-outline"></ion-icon>
+            </div>
         </div>
         ${html.node`<textarea
                     class="editor"

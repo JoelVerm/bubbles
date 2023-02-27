@@ -37,7 +37,6 @@ export const search = async () => {
         content: searchTerm
     }).then(r => r.json())
     notesList = r
-    console.log(r)
     update()
 }
 

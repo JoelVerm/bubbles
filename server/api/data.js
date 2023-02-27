@@ -24,6 +24,9 @@ export async function flami(req) {
         case 'get':
             note = (await db.select(`notes:${q.id}`))[0]
             break
+        case 'delete':
+            await db.delete(`notes:${q.id}`)
+            return
         case 'query':
             return (
                 await db.query(
