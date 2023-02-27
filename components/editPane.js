@@ -97,6 +97,7 @@ export const page = () => html`
             }
             .editPane .tag {
                 position: relative;
+                padding-right: 2rem;
             }
             .editPane .tags .deleteButton {
                 position: absolute;

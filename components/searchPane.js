@@ -86,6 +86,7 @@ export const page = () => html`
             }
             .searchPane > .tags .tag {
                 position: relative;
+                padding-right: 2rem;
             }
             .searchPane > .tags ion-icon {
                 position: absolute;
