@@ -47,6 +47,8 @@ export const page = () => html`
         <style>
             .searchPane {
                 background-color: #222;
+                display: flex;
+                flex-direction: column;
             }
             .searchPane .searchBar {
                 width: calc(100% - 30px);
@@ -69,10 +71,14 @@ export const page = () => html`
             }
             .searchPane .results {
                 overflow-y: auto;
+                flex: 1;
+                margin-top: 15px;
+                padding-top: -15px;
             }
             .searchPane .results .result {
                 width: calc(100% - 30px);
-                margin: 15px;
+                margin-bottom: 15px;
+                margin-left: 15px;
                 padding: 0.5rem;
                 background-color: #333;
                 border-radius: 5px;
