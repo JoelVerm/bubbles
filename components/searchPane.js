@@ -159,10 +159,14 @@ export const page = () => html`
                     html`<div class="result" onclick=${() => loadNote(e)}>
                         <div class="content">
                             ${e.content
-                                .split(' ')
-                                .slice(0, 50)
-                                .join(' ')}${e.content.split(' ').length > 50
-                                ? '...'
+                                .split('\n')
+                                .slice(0, 5)
+                                .map((s, i, a) =>
+                                    i < a.length - 1
+                                        ? html`${s} <br /> `
+                                        : html`${s}`
+                                )}${e.content.split('\n').length > 5
+                                ? html`<br />...`
                                 : ''}
                         </div>
                         <div class="tags">
