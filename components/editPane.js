@@ -33,32 +33,6 @@ const request = data =>
 export const page = () => html`
     <section class="editPane">
         <style>
-            @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
-
-            * {
-                box-sizing: border-box;
-                font-family: 'Josefin Sans', sans-serif;
-                font-size: 1rem;
-                color: #eed;
-            }
-            body {
-                margin: 0;
-            }
-            main {
-                display: flex;
-                height: 100vh;
-            }
-            .tag {
-                display: inline-block;
-                min-width: 100px;
-                margin-top: 15px;
-                margin-left: 15px;
-                padding: 0.5rem;
-                background-color: var(--bg-3);
-                outline: none;
-                border: none;
-                border-radius: 5px;
-            }
             .editPane {
                 position: relative;
                 display: flex;
@@ -78,6 +52,16 @@ export const page = () => html`
             .editPane .buttons div {
                 aspect-ratio: 1;
                 padding: 0.5rem;
+                cursor: pointer;
+                background-color: var(--col-1);
+                border-radius: 5px;
+                transition: filter 0.2s;
+            }
+            .editPane .buttons div:hover {
+                filter: brightness(80%);
+            }
+            .editPane .buttons div:active {
+                filter: brightness(70%);
             }
             .editPane .buttons div ion-icon {
                 color: #222;
@@ -105,6 +89,9 @@ export const page = () => html`
                 right: 0px;
                 margin: 0.5rem;
             }
+            .editPane .tags .tagBar {
+                cursor: text;
+            }
             .editPane .tags .tagBar:empty::before {
                 content: 'Add a tag...';
                 color: #888;
@@ -123,9 +110,18 @@ export const page = () => html`
             <div
                 class="saveButton"
                 onclick=${async () => {
-                    let r = await request(data).then(r => r.json())
-                    data.id = r.id
-                    data.type = 'update'
+                    if (!data.content) {
+                        if (!data.id) return
+                        await request({
+                            type: 'delete',
+                            id: data.id
+                        })
+                        data = createNoteData()
+                    } else {
+                        let r = await request(data).then(r => r.json())
+                        data.id = r.id
+                        data.type = 'update'
+                    }
                     search()
                 }}
             >

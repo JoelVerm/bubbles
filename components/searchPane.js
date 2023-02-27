@@ -45,32 +45,6 @@ search()
 export const page = () => html`
     <section class="searchPane">
         <style>
-            @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
-
-            * {
-                box-sizing: border-box;
-                font-family: 'Josefin Sans', sans-serif;
-                font-size: 1rem;
-                color: #eed;
-            }
-            body {
-                margin: 0;
-            }
-            main {
-                display: flex;
-                height: 100vh;
-            }
-            .tag {
-                display: inline-block;
-                min-width: 100px;
-                margin-top: 15px;
-                margin-left: 15px;
-                padding: 0.5rem;
-                background-color: #444;
-                outline: none;
-                border: none;
-                border-radius: 5px;
-            }
             .searchPane {
                 background-color: #222;
             }
@@ -105,6 +79,9 @@ export const page = () => html`
             }
             .searchPane .results .result .tags {
                 margin-left: -15px;
+            }
+            .searchPane .tags .tagBar {
+                cursor: text;
             }
             .searchPane .tags .tagBar:empty::before {
                 content: 'Search a tag...';

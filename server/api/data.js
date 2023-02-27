@@ -26,7 +26,7 @@ export async function flami(req) {
             break
         case 'delete':
             await db.delete(`notes:${q.id}`)
-            return
+            return []
         case 'query':
             return (
                 await db.query(

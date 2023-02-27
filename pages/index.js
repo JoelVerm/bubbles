@@ -31,6 +31,19 @@ flami(
                 .searchPane {
                     flex: 1;
                 }
+
+                .tag {
+                    display: inline-block;
+                    min-width: 100px;
+                    margin-top: 15px;
+                    margin-left: 15px;
+                    padding: 0.5rem;
+                    background-color: #444;
+                    outline: none;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                }
             </style>
             ${editPane()} ${searchPane()}
         </main>
