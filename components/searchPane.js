@@ -73,7 +73,6 @@ export const page = () => html`
                 overflow-y: auto;
                 flex: 1;
                 margin-top: 15px;
-                padding-top: -15px;
             }
             .searchPane .results .result {
                 width: calc(100% - 30px);

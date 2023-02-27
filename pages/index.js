@@ -44,6 +44,21 @@ flami(
                     border-radius: 5px;
                     cursor: pointer;
                 }
+
+                * {
+                    scrollbar-color: #444 #333;
+                }
+                *::-webkit-scrollbar {
+                    background: #333;
+                }
+                *::-webkit-scrollbar-thumb {
+                    border-radius: 15px;
+                    background: #444;
+                }
+                *::-webkit-scrollbar-track {
+                    border-radius: 15px;
+                    background: #333;
+                }
             </style>
             ${editPane()} ${searchPane()}
         </main>
