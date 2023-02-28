@@ -6,7 +6,15 @@ const createNoteData = () => ({
     content: '',
     tags: []
 })
-let data = createNoteData()
+let data
+if (startNote)
+    data = {
+        type: 'update',
+        id: startNote.id,
+        content: startNote.content,
+        tags: startNote.tags
+    }
+else data = createNoteData()
 export const loadNote = note => {
     data = {
         type: 'update',
