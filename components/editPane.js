@@ -7,6 +7,7 @@ const createNoteData = () => ({
     tags: []
 })
 let data
+/* global startNote */
 if (startNote)
     data = {
         type: 'update',
