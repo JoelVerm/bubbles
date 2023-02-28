@@ -1,6 +1,16 @@
 import { db } from './db.js'
 
 /**
+ * @param {String} query
+ * @param {Record<string, unknown>} variables
+ */
+const dbQuery = async (query, variables) =>
+    (await db.query(query, variables).catch(console.error))[0].result.map(e => {
+        e.id = e.id.split(':')[1]
+        return e
+    })
+
+/**
  * @param {import('../../main.js').RunningRequest} req
  */
 export async function flami(req) {
@@ -32,27 +42,31 @@ export async function flami(req) {
             await db.delete(`notes:${q.id}`).catch(console.error)
             return []
         case 'query':
-            return (
-                await db
-                    .query(
-                        `SELECT * FROM (SELECT *, count([${q.tags
-                            .map((t, i) => `tags ?~ $t${i}`)
-                            .join(
-                                ', '
-                            )}]) AS matches FROM notes ORDER BY RAND()) WHERE matches >= $minTagCount AND content ~ $content ORDER BY matches DESC LIMIT 50`,
-                        {
-                            ...Object.fromEntries(
-                                q.tags.map((t, i) => [`t${i}`, t])
-                            ),
-                            minTagCount: Math.round(q.tags.length / 2),
-                            content: q.content
-                        }
-                    )
-                    .catch(console.error)
-            )[0].result.map(e => {
-                e.id = e.id.split(':')[1]
-                return e
-            })
+            return await dbQuery(
+                `SELECT * FROM (SELECT *, count([${q.tags
+                    .map((t, i) => `tags ?~ $t${i}`)
+                    .join(
+                        ', '
+                    )}]) AS matches FROM notes ORDER BY RAND()) WHERE matches >= $minTagCount AND content ~ $content ORDER BY matches DESC LIMIT 50`,
+                {
+                    ...Object.fromEntries(q.tags.map((t, i) => [`t${i}`, t])),
+                    minTagCount: Math.round(q.tags.length / 2),
+                    content: q.content
+                }
+            )
+        case 'related':
+            return await dbQuery(
+                `SELECT * FROM (SELECT *, count([${q.tags
+                    .map((t, i) => `tags ?~ $t${i}`)
+                    .join(
+                        ', '
+                    )}]) AS matches FROM notes ORDER BY RAND()) WHERE matches >= $minTagCount AND content ~ $content ORDER BY matches DESC LIMIT 50`,
+                {
+                    ...Object.fromEntries(q.tags.map((t, i) => [`t${i}`, t])),
+                    minTagCount: Math.round(q.tags.length / 2),
+                    content: q.content
+                }
+            )
     }
     note.id = note.id.split(':')[1]
     if (note) return note
