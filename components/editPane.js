@@ -105,6 +105,26 @@ export const page = () => html`
                 content: 'Add a tag...';
                 color: #888;
             }
+            .editPane .relatedButton {
+                position: absolute;
+                bottom: 15px;
+                left: 15px;
+                background-color: var(--col-1);
+                border-radius: 5px;
+                aspect-ratio: 1;
+                padding: 0.5rem;
+                cursor: pointer;
+                transition: filter 0.2s;
+            }
+            .editPane .relatedButton:hover {
+                filter: brightness(80%);
+            }
+            .editPane .relatedButton:active {
+                filter: brightness(70%);
+            }
+            .editPane .relatedButton ion-icon {
+                color: #222;
+            }
         </style>
         <div class="buttons">
             <div
@@ -158,6 +178,14 @@ export const page = () => html`
 ${data.content}</textarea
                 >`}
         <div class="tags">
+            <div
+                class="relatedButton"
+                onclick=${() => {
+                    if (data.id) window.location = `related?id=${data.id}`
+                }}
+            >
+                <ion-icon name="library-outline"></ion-icon>
+            </div>
             <span
                 role="textbox"
                 contenteditable
