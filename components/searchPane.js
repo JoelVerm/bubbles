@@ -36,6 +36,7 @@ export const search = async () => {
         tags: searchTags,
         content: searchTerm
     }).then(r => r.json())
+    if (r.ERROR) return
     notesList = r
     update()
 }

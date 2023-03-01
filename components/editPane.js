@@ -8,7 +8,7 @@ const createNoteData = () => ({
 })
 let data
 /* global startNote */
-if (startNote)
+if (startNote && !startNote.ERROR)
     data = {
         type: 'update',
         id: startNote.id,
