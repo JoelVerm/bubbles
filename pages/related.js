@@ -1,3 +1,6 @@
+import { page as noteWidget } from '../components/noteWidget.js'
+
+/* global relatedNotes */
 flami(
     () => html`
         <main>
@@ -18,7 +21,7 @@ flami(
                     --col-1: #5a2;
                 }
                 main {
-                    display: relative;
+                    position: relative;
                     height: 100vh;
                     background-color: var(--bg-1);
                 }
@@ -50,7 +53,39 @@ flami(
                     border-radius: 15px;
                     background: #333;
                 }
+
+                .related {
+                    display: flex;
+                    flex-direction: column;
+                    flex-wrap: wrap;
+                    height: fit-content;
+                    padding-top: 15px;
+                    margin-right: 15px;
+                }
+                .related .noteWidget {
+                    width: calc(33% - 30px);
+                    margin-bottom: 15px;
+                    margin-left: 15px;
+                    padding: 0.5rem;
+                    background-color: var(--bg-2);
+                    border-radius: 5px;
+                }
+                .related .noteWidget .tags {
+                    margin-left: -15px;
+                }
+                .related .tag {
+                    color: var(--col-1);
+                }
             </style>
+            <section class="related">
+                ${relatedNotes.map(e =>
+                    noteWidget(
+                        e,
+                        () => {},
+                        t => html`<span class="tag">${t}</span>`
+                    )
+                )}
+            </section>
         </main>
     `
 )

@@ -1,4 +1,5 @@
 import { loadNote } from './editPane.js'
+import { page as noteWidget } from './noteWidget.js'
 
 let searchTerm = ''
 let searchTags = []
@@ -75,7 +76,7 @@ export const page = () => html`
                 flex: 1;
                 margin-top: 15px;
             }
-            .searchPane .results .result {
+            .searchPane .results .noteWidget {
                 width: calc(100% - 30px);
                 margin-bottom: 15px;
                 margin-left: 15px;
@@ -83,7 +84,7 @@ export const page = () => html`
                 background-color: var(--bg-2);
                 border-radius: 5px;
             }
-            .searchPane .results .result .tags {
+            .searchPane .results .noteWidget .tags {
                 margin-left: -15px;
             }
             .searchPane .results .tag {
@@ -140,25 +141,8 @@ export const page = () => html`
             )}
         </div>
         <div class="results">
-            ${notesList.map(
-                e =>
-                    html`<div class="result" onclick=${() => loadNote(e)}>
-                        <div class="content">
-                            ${e.content
-                                .split('\n')
-                                .slice(0, 5)
-                                .map((s, i, a) =>
-                                    i < a.length - 1
-                                        ? html`${s} <br /> `
-                                        : html`${s}`
-                                )}${e.content.split('\n').length > 5
-                                ? html`<br />...`
-                                : ''}
-                        </div>
-                        <div class="tags">
-                            ${e.tags.map(t => searchableTag(t))}
-                        </div>
-                    </div>`
+            ${notesList.map(e =>
+                noteWidget(e, () => loadNote(e), searchableTag)
             )}
         </div>
     </section>
