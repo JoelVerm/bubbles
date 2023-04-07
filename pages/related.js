@@ -68,6 +68,7 @@ flami(
                     padding: 0.5rem;
                     background-color: var(--bg-2);
                     border-radius: 5px;
+                    cursor: pointer;
                 }
                 .related .noteWidget .tags {
                     margin-left: -15px;
@@ -80,7 +81,9 @@ flami(
                 ${relatedNotes.map(e =>
                     noteWidget(
                         e,
-                        () => {},
+                        () => {
+                            window.location = `/?id=${e.id}`
+                        },
                         t => html`<span class="tag">${t}</span>`
                     )
                 )}

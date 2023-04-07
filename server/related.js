@@ -10,7 +10,6 @@ export async function flami(req) {
         type: 'related',
         id: id
     })
-    console.log(result)
     if (result.ERROR) req.redirect('/')
     return {
         relatedNotes: result
