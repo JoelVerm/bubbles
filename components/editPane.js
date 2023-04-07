@@ -113,13 +113,18 @@ export const page = () => html`
                 border-radius: 5px;
                 aspect-ratio: 1;
                 padding: 0.5rem;
-                cursor: pointer;
                 transition: filter 0.2s;
             }
-            .editPane .relatedButton:hover {
+            .editPane .relatedButton[disabled] {
+                filter: brightness(50%);
+            }
+            .editPane .relatedButton:not([disabled]) {
+                cursor: pointer;
+            }
+            .editPane .relatedButton:not([disabled]):hover {
                 filter: brightness(80%);
             }
-            .editPane .relatedButton:active {
+            .editPane .relatedButton:not([disabled]):active {
                 filter: brightness(70%);
             }
             .editPane .relatedButton ion-icon {
@@ -183,6 +188,7 @@ ${data.content}</textarea
                 onclick=${() => {
                     if (data.id) window.location = `related?id=${data.id}`
                 }}
+                ?disabled=${!data.id}
             >
                 <ion-icon name="library-outline"></ion-icon>
             </div>
