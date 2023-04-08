@@ -77,6 +77,7 @@ flami(() => {
                 }
                 .related .column {
                     display: flex;
+                    flex: 1;
                     flex-direction: column;
                     flex-wrap: wrap;
                     height: fit-content;
