@@ -55,14 +55,17 @@ flami(
 
                 .related {
                     display: flex;
+                    padding-top: 15px;
+                    margin-right: 15px;
+                    overflow-y: auto;
+                }
+                .related .column {
+                    display: flex;
                     flex-direction: column;
                     flex-wrap: wrap;
                     height: fit-content;
-                    padding-top: 15px;
-                    margin-right: 15px;
                 }
                 .related .noteWidget {
-                    width: calc(33% - 30px);
                     margin-bottom: 15px;
                     margin-left: 15px;
                     padding: 0.5rem;
@@ -78,15 +81,48 @@ flami(
                 }
             </style>
             <section class="related">
-                ${relatedNotes.map(e =>
-                    noteWidget(
-                        e,
-                        () => {
-                            window.location = `/?id=${e.id}`
-                        },
-                        t => html`<span class="tag">${t}</span>`
-                    )
-                )}
+                <div class="column col-1">
+                    ${relatedNotes
+                        .slice(0, Math.ceil(relatedNotes.length / 3))
+                        .map(e =>
+                            noteWidget(
+                                e,
+                                () => {
+                                    window.location = `/?id=${e.id}`
+                                },
+                                t => html`<span class="tag">${t}</span>`
+                            )
+                        )}
+                </div>
+                <div class="column col-2">
+                    ${relatedNotes
+                        .slice(
+                            Math.ceil(relatedNotes.length / 3),
+                            Math.ceil((relatedNotes.length / 3) * 2)
+                        )
+                        .map(e =>
+                            noteWidget(
+                                e,
+                                () => {
+                                    window.location = `/?id=${e.id}`
+                                },
+                                t => html`<span class="tag">${t}</span>`
+                            )
+                        )}
+                </div>
+                <div class="column col-3">
+                    ${relatedNotes
+                        .slice(Math.ceil((relatedNotes.length / 3) * 2))
+                        .map(e =>
+                            noteWidget(
+                                e,
+                                () => {
+                                    window.location = `/?id=${e.id}`
+                                },
+                                t => html`<span class="tag">${t}</span>`
+                            )
+                        )}
+                </div>
             </section>
         </main>
     `
