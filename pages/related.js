@@ -1,8 +1,24 @@
 import { page as noteWidget } from '../components/noteWidget.js'
 
 /* global relatedNotes */
-flami(
-    () => html`
+flami(() => {
+    const col1Notes = []
+    const col2Notes = []
+    const col3Notes = []
+    for (const i in relatedNotes) {
+        switch (i % 3) {
+            case 0:
+                col1Notes.push(relatedNotes[i])
+                break
+            case 1:
+                col2Notes.push(relatedNotes[i])
+                break
+            case 2:
+                col3Notes.push(relatedNotes[i])
+                break
+        }
+    }
+    return html`
         <main>
             <style>
                 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
@@ -82,48 +98,39 @@ flami(
             </style>
             <section class="related">
                 <div class="column col-1">
-                    ${relatedNotes
-                        .slice(0, Math.ceil(relatedNotes.length / 3))
-                        .map(e =>
-                            noteWidget(
-                                e,
-                                () => {
-                                    window.location = `/?id=${e.id}`
-                                },
-                                t => html`<span class="tag">${t}</span>`
-                            )
-                        )}
+                    ${col1Notes.map(e =>
+                        noteWidget(
+                            e,
+                            () => {
+                                window.location = `/?id=${e.id}`
+                            },
+                            t => html`<span class="tag">${t}</span>`
+                        )
+                    )}
                 </div>
                 <div class="column col-2">
-                    ${relatedNotes
-                        .slice(
-                            Math.ceil(relatedNotes.length / 3),
-                            Math.ceil((relatedNotes.length / 3) * 2)
+                    ${col2Notes.map(e =>
+                        noteWidget(
+                            e,
+                            () => {
+                                window.location = `/?id=${e.id}`
+                            },
+                            t => html`<span class="tag">${t}</span>`
                         )
-                        .map(e =>
-                            noteWidget(
-                                e,
-                                () => {
-                                    window.location = `/?id=${e.id}`
-                                },
-                                t => html`<span class="tag">${t}</span>`
-                            )
-                        )}
+                    )}
                 </div>
                 <div class="column col-3">
-                    ${relatedNotes
-                        .slice(Math.ceil((relatedNotes.length / 3) * 2))
-                        .map(e =>
-                            noteWidget(
-                                e,
-                                () => {
-                                    window.location = `/?id=${e.id}`
-                                },
-                                t => html`<span class="tag">${t}</span>`
-                            )
-                        )}
+                    ${col3Notes.map(e =>
+                        noteWidget(
+                            e,
+                            () => {
+                                window.location = `/?id=${e.id}`
+                            },
+                            t => html`<span class="tag">${t}</span>`
+                        )
+                    )}
                 </div>
             </section>
         </main>
     `
-)
+})
