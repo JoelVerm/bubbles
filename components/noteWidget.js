@@ -17,7 +17,7 @@ export const page = (note, onNoteClick, tagComponent) => {
         content = contentLines.slice(0, maxAllowedLines).join('\n')
     }
     return html`<div class="noteWidget" onclick=${onNoteClick}>
-        <div class="content">${content}${hasDots ? html`<br />...` : ''}</div>
+        <div class="content">${content}${hasDots ? '...' : ''}</div>
         <div class="tags">${note.tags.map(t => tagComponent(t))}</div>
     </div>`
 }
