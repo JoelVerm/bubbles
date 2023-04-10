@@ -1,5 +1,15 @@
+import { marked } from 'https://cdn.jsdelivr.net/gh/markedjs/marked/lib/marked.esm.js'
+import markedKatex from 'https://cdn.jsdelivr.net/npm/marked-katex-extension@1.0.2/+esm'
+marked.use(markedKatex({}))
+
+marked.setOptions({
+    breaks: true,
+    smartypants: true
+})
+
 const maxAllowedLines = 5
 const maxAllowedChars = 500
+
 export const page = (note, onNoteClick, tagComponent) => {
     let content = note.content
     let hasDots = false
@@ -16,8 +26,14 @@ export const page = (note, onNoteClick, tagComponent) => {
         hasDots = true
         content = contentLines.slice(0, maxAllowedLines).join('\n')
     }
+    content = marked.parse(content)
     return html`<div class="noteWidget" onclick=${onNoteClick}>
-        <div class="content">${content}${hasDots ? '...' : ''}</div>
+        <style>
+            .katex-html {
+                display: none;
+            }
+        </style>
+        <div class="content">${html([content])}${hasDots ? '...' : ''}</div>
         <div class="tags">${note.tags.map(t => tagComponent(t))}</div>
     </div>`
 }
