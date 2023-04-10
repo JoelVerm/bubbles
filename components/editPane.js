@@ -1,4 +1,12 @@
 import { searchableTag, search } from './searchPane.js'
+import { marked } from 'https://cdn.jsdelivr.net/gh/markedjs/marked/lib/marked.esm.js'
+import markedKatex from 'https://cdn.jsdelivr.net/npm/marked-katex-extension@1.0.2/+esm'
+marked.use(markedKatex({}))
+
+marked.setOptions({
+    breaks: true,
+    smartypants: true
+})
 
 const createNoteData = () => ({
     type: 'add',
@@ -23,6 +31,7 @@ export const loadNote = note => {
         content: note.content,
         tags: note.tags
     }
+    document.querySelector('.editPane .editor .edit').value = data.content
     update()
 }
 
@@ -75,15 +84,29 @@ export const page = () => html`
             .editPane .buttons div ion-icon {
                 color: #222;
             }
+
             .editPane .editor {
                 flex: 3;
+                background-color: var(--bg-3);
+                border-radius: 0px 0px 15px 0px;
+                display: flex;
+            }
+            .editPane .editor .edit {
+                white-space: pre-wrap;
+                flex: 1;
                 background-color: var(--bg-3);
                 padding: 10px;
                 outline: none;
                 border: none;
                 resize: none;
-                border-radius: 0px 0px 15px 0px;
+                border-right: 2px solid var(--bg-2);
             }
+            .editPane .editor .markdown {
+                flex: 1;
+                background-color: var(--bg-3);
+                padding: 10px;
+            }
+
             .editPane .tags {
                 flex: 1;
                 background-color: var(--bg-2);
@@ -136,6 +159,8 @@ export const page = () => html`
                 class="newButton"
                 onclick=${async () => {
                     data = createNoteData()
+                    document.querySelector('.editPane .editor .edit').value =
+                        data.content
                     update()
                 }}
             >
@@ -151,6 +176,9 @@ export const page = () => html`
                             id: data.id
                         })
                         data = createNoteData()
+                        document.querySelector(
+                            '.editPane .editor .edit'
+                        ).value = data.content
                     } else {
                         let r = await request(data).then(r => r.json())
                         data.id = r.id
@@ -169,19 +197,29 @@ export const page = () => html`
                         id: data.id
                     })
                     data = createNoteData()
+                    document.querySelector('.editPane .editor .edit').value =
+                        data.content
                     search()
                 }}
             >
                 <ion-icon name="trash-outline"></ion-icon>
             </div>
         </div>
-        ${html.node`<textarea
-                    class="editor"
-                    placeholder="Create a note..."
-                    onkeyup=${e => (data.content = e.target.value)}
-                >
-${data.content}</textarea
-                >`}
+        <div class="editor">
+            <textarea
+                class="edit"
+                contenteditable
+                placeholder="Create a note..."
+                onkeyup=${e => {
+                    data.content = e.target.value
+                    update()
+                }}
+            >
+                ${data.content}
+            </textarea
+            >
+            <div class="markdown">${html([marked.parse(data.content)])}</div>
+        </div>
         <div class="tags">
             <div
                 class="relatedButton"
