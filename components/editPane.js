@@ -106,6 +106,9 @@ export const page = () => html`
                 background-color: var(--bg-3);
                 padding: 10px;
             }
+            .editPane .editor .markdown img {
+                width: 100%;
+            }
 
             .editPane .tags {
                 flex: 1;

@@ -29,8 +29,11 @@ export const page = (note, onNoteClick, tagComponent) => {
     content = marked.parse(content)
     return html`<div class="noteWidget" onclick=${onNoteClick}>
         <style>
-            .katex-html {
+            .noteWidget .katex-html {
                 display: none;
+            }
+            .noteWidget .content img {
+                width: 100%;
             }
         </style>
         <div class="content">${html([content])}${hasDots ? '...' : ''}</div>
