@@ -1,6 +1,6 @@
 import { marked } from 'https://cdn.jsdelivr.net/gh/markedjs/marked/lib/marked.esm.js'
 import markedKatex from 'https://cdn.jsdelivr.net/npm/marked-katex-extension@1.0.2/+esm'
-marked.use(markedKatex({}))
+marked.use(markedKatex({ throwOnError: false }))
 
 marked.setOptions({
     breaks: true,

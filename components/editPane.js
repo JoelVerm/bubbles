@@ -1,7 +1,7 @@
 import { searchableTag, search } from './searchPane.js'
 import { marked } from 'https://cdn.jsdelivr.net/gh/markedjs/marked/lib/marked.esm.js'
 import markedKatex from 'https://cdn.jsdelivr.net/npm/marked-katex-extension@1.0.2/+esm'
-marked.use(markedKatex({}))
+marked.use(markedKatex({ throwOnError: false }))
 
 marked.setOptions({
     breaks: true,
@@ -108,6 +108,9 @@ export const page = () => html`
             }
             .editPane .editor .markdown img {
                 width: 100%;
+            }
+            .editPane .editor .markdown .katex-html {
+                display: none;
             }
 
             .editPane .tags {
