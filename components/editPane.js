@@ -96,7 +96,7 @@ export const page = () => html`
             }
             .editPane .editor .edit {
                 white-space: pre-wrap;
-                flex: 1 1 50%;
+                flex: 0 0 50%;
                 background-color: var(--bg-3);
                 padding: 10px;
                 outline: none;
@@ -105,7 +105,7 @@ export const page = () => html`
                 border-right: 2px solid var(--bg-2);
             }
             .editPane .editor .markdown {
-                flex: 1 1 50%;
+                flex: 0 0 50%;
                 background-color: var(--bg-3);
                 padding: 10px;
             }
