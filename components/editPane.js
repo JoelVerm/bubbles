@@ -86,14 +86,17 @@ export const page = () => html`
             }
 
             .editPane .editor {
-                flex: 3;
+                flex: 3 1 75%;
                 background-color: var(--bg-3);
                 border-radius: 0px 0px 15px 0px;
+                overflow-y: auto;
+            }
+            .editPane .editorScroll {
                 display: flex;
             }
             .editPane .editor .edit {
                 white-space: pre-wrap;
-                flex: 1;
+                flex: 1 1 50%;
                 background-color: var(--bg-3);
                 padding: 10px;
                 outline: none;
@@ -102,7 +105,7 @@ export const page = () => html`
                 border-right: 2px solid var(--bg-2);
             }
             .editPane .editor .markdown {
-                flex: 1;
+                flex: 1 1 50%;
                 background-color: var(--bg-3);
                 padding: 10px;
             }
@@ -114,7 +117,7 @@ export const page = () => html`
             }
 
             .editPane .tags {
-                flex: 1;
+                flex: 1 1 25%;
                 background-color: var(--bg-2);
             }
             .editPane .tag {
@@ -212,19 +215,22 @@ export const page = () => html`
             </div>
         </div>
         <div class="editor">
-            <textarea
-                class="edit"
-                contenteditable
-                placeholder="Create a note..."
-                onkeyup=${e => {
-                    data.content = e.target.value
-                    update()
-                }}
-            >
+            <div class="editorScroll">
+                <textarea
+                    class="edit"
+                    contenteditable
+                    placeholder="Create a note..."
+                    onkeyup=${e => {
+                        data.content = e.target.value
+                        update()
+                    }}
+                >
                 ${data.content}
-            </textarea
-            >
-            <div class="markdown">${html([marked.parse(data.content)])}</div>
+            </textarea>
+                <div class="markdown">
+                    ${html([marked.parse(data.content)])}
+                </div>
+            </div>
         </div>
         <div class="tags">
             <div
