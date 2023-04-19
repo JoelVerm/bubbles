@@ -57,34 +57,6 @@ export const page = () => html`
                 overflow: hidden;
             }
 
-            .editPane .buttons {
-                display: flex;
-                height: 50px;
-                background-color: var(--bg-2);
-            }
-            .editPane .buttons .button {
-                aspect-ratio: 1;
-                margin: 7px;
-                padding: 10px;
-                border-radius: 5px;
-                transition: filter 0.2s, background-color 0.2s;
-            }
-            .editPane .buttons .button:not([disabled]) {
-                cursor: pointer;
-            }
-            .editPane .buttons .button:not([disabled]):hover {
-                background-color: var(--bg-3);
-            }
-            .editPane .buttons .button:active {
-                filter: brightness(70%);
-            }
-            .editPane .buttons .button[disabled] {
-                filter: brightness(50%);
-            }
-            .editPane .buttons .spacer {
-                flex: 1000;
-            }
-
             .editPane .editor {
                 height: calc(75% - 50px);
                 background-color: var(--bg-1);
@@ -121,13 +93,14 @@ export const page = () => html`
             }
             .editPane .tag {
                 position: relative;
-                padding-right: 2rem;
+                padding-right: 30px;
+                color: var(--col-1);
             }
             .editPane .tags .deleteButton {
                 position: absolute;
                 top: 0px;
                 right: 0px;
-                margin: 0.5rem;
+                padding: 7px;
             }
             .editPane .tags .tagBar {
                 cursor: text;
@@ -137,7 +110,7 @@ export const page = () => html`
                 color: #888;
             }
         </style>
-        <div class="buttons">
+        <div class="topBar">
             <div
                 class="button newButton"
                 onclick=${async () => {
@@ -241,7 +214,7 @@ export const page = () => html`
                 searchableTag(
                     t,
                     html`<div
-                        class="deleteButton"
+                        class="button deleteButton"
                         onclick=${e => {
                             e.preventDefault()
                             e.stopPropagation()

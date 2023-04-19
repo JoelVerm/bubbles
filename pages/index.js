@@ -33,6 +33,37 @@ flami(
                     flex: 1;
                 }
 
+                .topBar {
+                    display: flex;
+                    height: 50px;
+                    background-color: var(--bg-2);
+                }
+                .topBar .spacer {
+                    flex: 1000;
+                }
+                .topBar .button {
+                    margin: 7px;
+                    padding: 10px;
+                    aspect-ratio: 1;
+                }
+                .button {
+                    border-radius: 5px;
+                    transition: filter 0.2s, background-color 0.2s;
+                    background-color: inherit;
+                }
+                .button:not([disabled]) {
+                    cursor: pointer;
+                }
+                .button:not([disabled]):hover {
+                    filter: brightness(130%);
+                }
+                .button:active {
+                    filter: brightness(70%);
+                }
+                .button[disabled] {
+                    filter: brightness(50%);
+                }
+
                 .tag {
                     display: inline-block;
                     min-width: 100px;

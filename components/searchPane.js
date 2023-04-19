@@ -52,10 +52,6 @@ export const page = () => html`
                 display: flex;
                 flex-direction: column;
             }
-            .searchPane .topBar {
-                height: 50px;
-                background-color: var(--bg-2);
-            }
             .searchPane .searchBar {
                 width: calc(100% - 14px);
                 margin: 7px;
@@ -136,7 +132,7 @@ export const page = () => html`
             ${searchTags.map(
                 (t, i) =>
                     html`<span
-                        class="tag"
+                        class="tag button"
                         onclick=${() => {
                             searchTags.splice(i, 1)
                             search()
