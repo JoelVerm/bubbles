@@ -18,6 +18,7 @@ flami(
                     --bg-1: #222;
                     --bg-2: #333;
                     --bg-3: #444;
+                    --col-txt: #eed;
                     --col-1: #5a2;
                 }
                 main {

@@ -53,42 +53,41 @@ export const page = () => html`
         <style>
             .editPane {
                 position: relative;
-                display: flex;
-                flex-direction: column;
-                background-color: var(--bg-2);
-                border-radius: 0px 15px 15px 0px;
+                background-color: var(--bg-1);
                 overflow: hidden;
             }
+
             .editPane .buttons {
                 display: flex;
-                position: absolute;
-                top: 15px;
-                right: 15px;
-                background-color: var(--col-1);
-                border-radius: 5px;
+                height: 50px;
+                background-color: var(--bg-2);
             }
-            .editPane .buttons div {
+            .editPane .buttons .button {
                 aspect-ratio: 1;
-                padding: 0.5rem;
-                cursor: pointer;
-                background-color: var(--col-1);
+                margin: 7px;
+                padding: 10px;
                 border-radius: 5px;
-                transition: filter 0.2s;
+                transition: filter 0.2s, background-color 0.2s;
             }
-            .editPane .buttons div:hover {
-                filter: brightness(80%);
+            .editPane .buttons .button:not([disabled]) {
+                cursor: pointer;
             }
-            .editPane .buttons div:active {
+            .editPane .buttons .button:not([disabled]):hover {
+                background-color: var(--bg-3);
+            }
+            .editPane .buttons .button:active {
                 filter: brightness(70%);
             }
-            .editPane .buttons div ion-icon {
-                color: #222;
+            .editPane .buttons .button[disabled] {
+                filter: brightness(50%);
+            }
+            .editPane .buttons .spacer {
+                flex: 1000;
             }
 
             .editPane .editor {
-                flex: 3 1 75%;
-                background-color: var(--bg-3);
-                border-radius: 0px 0px 15px 0px;
+                height: calc(75% - 50px);
+                background-color: var(--bg-1);
                 overflow-y: auto;
             }
             .editPane .editorScroll {
@@ -97,16 +96,15 @@ export const page = () => html`
             .editPane .editor .edit {
                 white-space: pre-wrap;
                 flex: 0 0 50%;
-                background-color: var(--bg-3);
+                background-color: var(--bg-1);
                 padding: 10px;
                 outline: none;
                 border: none;
                 resize: none;
-                border-right: 2px solid var(--bg-2);
             }
             .editPane .editor .markdown {
                 flex: 0 0 50%;
-                background-color: var(--bg-3);
+                background-color: var(--bg-1);
                 padding: 10px;
             }
             .editPane .editor .markdown img {
@@ -117,8 +115,9 @@ export const page = () => html`
             }
 
             .editPane .tags {
-                flex: 1 1 25%;
+                height: 25%;
                 background-color: var(--bg-2);
+                border-radius: 0px 15px 0px 0px;
             }
             .editPane .tag {
                 position: relative;
@@ -137,35 +136,10 @@ export const page = () => html`
                 content: 'Add a tag...';
                 color: #888;
             }
-            .editPane .relatedButton {
-                position: absolute;
-                bottom: 15px;
-                left: 15px;
-                background-color: var(--col-1);
-                border-radius: 5px;
-                aspect-ratio: 1;
-                padding: 0.5rem;
-                transition: filter 0.2s;
-            }
-            .editPane .relatedButton[disabled] {
-                filter: brightness(50%);
-            }
-            .editPane .relatedButton:not([disabled]) {
-                cursor: pointer;
-            }
-            .editPane .relatedButton:not([disabled]):hover {
-                filter: brightness(80%);
-            }
-            .editPane .relatedButton:not([disabled]):active {
-                filter: brightness(70%);
-            }
-            .editPane .relatedButton ion-icon {
-                color: #222;
-            }
         </style>
         <div class="buttons">
             <div
-                class="newButton"
+                class="button newButton"
                 onclick=${async () => {
                     data = createNoteData()
                     document.querySelector('.editPane .editor .edit').value =
@@ -176,7 +150,7 @@ export const page = () => html`
                 <ion-icon name="document-outline"></ion-icon>
             </div>
             <div
-                class="saveButton"
+                class="button saveButton"
                 onclick=${async () => {
                     if (!data.content) {
                         if (!data.id) return
@@ -199,7 +173,7 @@ export const page = () => html`
                 <ion-icon name="checkmark-done-outline"></ion-icon>
             </div>
             <div
-                class="deleteButton"
+                class="button deleteButton"
                 onclick=${async () => {
                     await request({
                         type: 'delete',
@@ -212,6 +186,16 @@ export const page = () => html`
                 }}
             >
                 <ion-icon name="trash-outline"></ion-icon>
+            </div>
+            <div class="spacer"></div>
+            <div
+                class="button relatedButton"
+                onclick=${() => {
+                    if (data.id) window.location = `related?id=${data.id}`
+                }}
+                ?disabled=${!data.id}
+            >
+                <ion-icon name="library-outline"></ion-icon>
             </div>
         </div>
         <div class="editor">
@@ -233,15 +217,6 @@ export const page = () => html`
             </div>
         </div>
         <div class="tags">
-            <div
-                class="relatedButton"
-                onclick=${() => {
-                    if (data.id) window.location = `related?id=${data.id}`
-                }}
-                ?disabled=${!data.id}
-            >
-                <ion-icon name="library-outline"></ion-icon>
-            </div>
             <span
                 role="textbox"
                 contenteditable
