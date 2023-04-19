@@ -52,10 +52,13 @@ export const page = () => html`
                 display: flex;
                 flex-direction: column;
             }
+            .searchPane .topBar {
+                height: 50px;
+                background-color: var(--bg-2);
+            }
             .searchPane .searchBar {
-                width: calc(100% - 30px);
-                margin: 15px;
-                margin-bottom: 0;
+                width: calc(100% - 14px);
+                margin: 7px;
                 padding: 0.5rem;
                 background-color: var(--bg-3);
                 outline: none;
@@ -74,18 +77,18 @@ export const page = () => html`
             .searchPane .results {
                 overflow-y: auto;
                 flex: 1;
-                margin-top: 15px;
+                margin-top: 7px;
             }
             .searchPane .results .noteWidget {
-                width: calc(100% - 30px);
-                margin-bottom: 15px;
-                margin-left: 15px;
+                width: calc(100% - 14px);
+                margin-bottom: 7px;
+                margin-left: 7px;
                 padding: 0.5rem;
                 background-color: var(--bg-2);
                 border-radius: 5px;
             }
             .searchPane .results .noteWidget .tags {
-                margin-left: -15px;
+                margin-left: -7px;
             }
             .searchPane .results .tag {
                 color: var(--col-1);
@@ -98,15 +101,17 @@ export const page = () => html`
                 color: #888;
             }
         </style>
-        <input
-            type="text"
-            class="searchBar"
-            placeholder="Search text..."
-            onkeyup=${e => {
-                searchTerm = e.target.value.trim()
-                search()
-            }}
-        />
+        <div class="topBar">
+            <input
+                type="text"
+                class="searchBar"
+                placeholder="Search text..."
+                onkeyup=${e => {
+                    searchTerm = e.target.value.trim()
+                    search()
+                }}
+            />
+        </div>
         <div class="tags">
             <span
                 role="textbox"

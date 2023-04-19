@@ -36,8 +36,8 @@ flami(
                 .tag {
                     display: inline-block;
                     min-width: 100px;
-                    margin-top: 15px;
-                    margin-left: 15px;
+                    margin-top: 7px;
+                    margin-left: 7px;
                     padding: 0.5rem;
                     background-color: #444;
                     outline: none;
