@@ -18,6 +18,7 @@ flami(
                     --bg-1: #222;
                     --bg-2: #333;
                     --bg-3: #444;
+                    --col-txt: #eed;
                     --col-1: #5a2;
                 }
                 main {
@@ -35,8 +36,8 @@ flami(
                 .tag {
                     display: inline-block;
                     min-width: 100px;
-                    margin-top: 15px;
-                    margin-left: 15px;
+                    margin-top: 7px;
+                    margin-left: 7px;
                     padding: 0.5rem;
                     background-color: #444;
                     outline: none;
