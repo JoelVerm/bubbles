@@ -104,6 +104,7 @@ export const page = () => html`
             }
             .editPane .tags .tagBar {
                 cursor: text;
+                color: var(--col-txt);
             }
             .editPane .tags .tagBar:empty::before {
                 content: 'Add a tag...';
