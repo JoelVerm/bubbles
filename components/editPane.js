@@ -162,15 +162,6 @@ export const page = () => html`
             </div>
             <div class="spacer"></div>
             <div
-                class="button relatedButton"
-                onclick=${() => {
-                    if (data.id) window.location = `related?id=${data.id}`
-                }}
-                ?disabled=${!data.id}
-            >
-                <ion-icon name="library-outline"></ion-icon>
-            </div>
-            <div
                 class="button searchTagsButton"
                 onclick=${() => {
                     setSearchTags([...data.tags])

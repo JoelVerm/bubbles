@@ -77,22 +77,6 @@ export async function query(q) {
                     }
                 )) ?? { ERROR: 'Unable to find matching search results' }
             )
-        case 'related':
-            note = (await db.select(`notes:${q.id}`).catch(console.error))?.[0]
-            if (!note)
-                return {
-                    ERROR: `Unable to retrieve note with id ${q.id}`
-                }
-            let tags = note.tags
-            return (
-                (await dbQuery(
-                    'SELECT *, count(intersect) FROM (SELECT *, array::intersect(tags, $tags) AS intersect FROM notes WHERE tags ANYINSIDE $tags) ORDER BY count DESC LIMIT 50',
-                    {
-                        id: q.id,
-                        tags
-                    }
-                )) ?? { ERROR: 'Unable to find related notes' }
-            )
     }
     note.id = note.id.split(':')[1]
     if (note) return note
