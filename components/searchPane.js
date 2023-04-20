@@ -6,6 +6,10 @@ let searchTags = []
 
 let notesList = []
 
+export const setSearchTags = tags => {
+    searchTags = tags
+}
+
 export const searchableTag = (value, addHtml) =>
     html`<span
         class="tag"

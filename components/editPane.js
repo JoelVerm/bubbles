@@ -1,4 +1,4 @@
-import { searchableTag, search } from './searchPane.js'
+import { setSearchTags, searchableTag, search } from './searchPane.js'
 import { marked } from 'https://cdn.jsdelivr.net/gh/markedjs/marked/lib/marked.esm.js'
 import markedKatex from 'https://cdn.jsdelivr.net/npm/marked-katex-extension@1.0.2/+esm'
 marked.use(markedKatex({ throwOnError: false }))
@@ -169,6 +169,15 @@ export const page = () => html`
                 ?disabled=${!data.id}
             >
                 <ion-icon name="library-outline"></ion-icon>
+            </div>
+            <div
+                class="button searchTagsButton"
+                onclick=${() => {
+                    setSearchTags([...data.tags])
+                    search()
+                }}
+            >
+                <ion-icon name="search-outline"></ion-icon>
             </div>
         </div>
         <div class="editor">
