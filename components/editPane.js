@@ -79,6 +79,31 @@ export const page = () => html`
                 background-color: var(--bg-1);
                 padding: 10px;
             }
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                margin-top: 0.5em;
+                margin-bottom: 0.5em;
+            }
+            .editPane .editor .markdown h1 {
+                font-size: 1.4rem;
+                color: var(--col-1);
+            }
+            .editPane .editor .markdown h2 {
+                font-size: 1.3rem;
+            }
+            .editPane .editor .markdown h3 {
+                font-size: 1.2rem;
+            }
+            .editPane .editor .markdown h4 {
+                font-size: 1.1rem;
+            }
+            .editPane .editor .markdown > :first-child:not(:has(br)) {
+                color: var(--col-1);
+            }
             .editPane .editor .markdown img {
                 width: 100%;
             }
