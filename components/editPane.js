@@ -188,6 +188,29 @@ export const page = () => html`
             </div>
             <div class="spacer"></div>
             <div
+                class="button autoTagButton"
+                onclick=${async () => {
+                    let tagString = await fetch('api/keywords', {
+                        method: 'POST',
+                        mode: 'cors',
+                        cache: 'no-cache',
+                        credentials: 'same-origin',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        redirect: 'follow',
+                        body: JSON.stringify({
+                            text: data.content
+                        })
+                    }).then(r => r.json())
+                    console.log(tagString)
+                    data.tags = data.tags.concat(tagString.split(','))
+                    update()
+                }}
+            >
+                <ion-icon name="pricetags-outline"></ion-icon>
+            </div>
+            <div
                 class="button searchTagsButton"
                 onclick=${() => {
                     setSearchTags([...data.tags])
