@@ -48,6 +48,25 @@ const request = data =>
         body: JSON.stringify(data)
     })
 
+const save = async () => {
+    if (!data.content) {
+        if (!data.id) return
+        await request({
+            type: 'delete',
+            id: data.id
+        })
+        data = createNoteData()
+        document.querySelector('.editPane .editor .edit').value = data.content
+    } else {
+        let r = await request(data).then(r => r.json())
+        data.id = r.id
+        data.type = 'update'
+    }
+    search()
+}
+
+let autoTagIsLoading = false
+
 export const page = () => html`
     <section class="editPane">
         <style>
@@ -55,6 +74,20 @@ export const page = () => html`
                 position: relative;
                 background-color: var(--bg-1);
                 overflow: hidden;
+            }
+
+            @keyframes bobbingButton {
+                from,
+                80%,
+                to {
+                    translate: 0px 0px;
+                }
+                40% {
+                    translate: 0px -30%;
+                }
+            }
+            .editPane .topBar .autoTagButton.loading ion-icon {
+                animation: bobbingButton 1s ease infinite;
             }
 
             .editPane .editor {
@@ -148,27 +181,7 @@ export const page = () => html`
             >
                 <ion-icon name="document-outline"></ion-icon>
             </div>
-            <div
-                class="button saveButton"
-                onclick=${async () => {
-                    if (!data.content) {
-                        if (!data.id) return
-                        await request({
-                            type: 'delete',
-                            id: data.id
-                        })
-                        data = createNoteData()
-                        document.querySelector(
-                            '.editPane .editor .edit'
-                        ).value = data.content
-                    } else {
-                        let r = await request(data).then(r => r.json())
-                        data.id = r.id
-                        data.type = 'update'
-                    }
-                    search()
-                }}
-            >
+            <div class="button saveButton" onclick=${save}>
                 <ion-icon name="checkmark-done-outline"></ion-icon>
             </div>
             <div
@@ -188,8 +201,12 @@ export const page = () => html`
             </div>
             <div class="spacer"></div>
             <div
-                class="button autoTagButton"
+                class=${`button autoTagButton ${
+                    autoTagIsLoading ? 'loading' : ''
+                }`}
                 onclick=${async () => {
+                    autoTagIsLoading = true
+                    update()
                     let tagString = await fetch('api/keywords', {
                         method: 'POST',
                         mode: 'cors',
@@ -205,7 +222,8 @@ export const page = () => html`
                     }).then(r => r.json())
                     console.log(tagString)
                     data.tags = data.tags.concat(tagString.split(','))
-                    update()
+                    autoTagIsLoading = false
+                    save()
                 }}
             >
                 <ion-icon name="pricetags-outline"></ion-icon>
