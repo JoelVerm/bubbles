@@ -29,13 +29,34 @@ export const page = (note, onNoteClick, tagComponent) => {
     content = marked.parse(content)
     return html`<div class="noteWidget" onclick=${onNoteClick}>
         <style>
+            .noteWidget {
+                position: relative;
+            }
             .noteWidget .katex-html {
                 display: none;
             }
             .noteWidget .content img {
                 width: 100%;
             }
+            .noteWidget .linkButton {
+                aspect-ratio: 1;
+                position: absolute;
+                top: 7px;
+                right: 7px;
+                padding: 0.5rem;
+            }
         </style>
+
+        <div
+            class="button linkButton"
+            onclick=${e => {
+                e.preventDefault()
+                e.stopPropagation()
+                navigator.clipboard.writeText(`[link](/?id=${note.id})`)
+            }}
+        >
+            <ion-icon name="link-outline"></ion-icon>
+        </div>
         <div class="content">${html([content])}${hasDots ? '...' : ''}</div>
         <div class="tags">${note.tags.map(t => tagComponent(t))}</div>
     </div>`

@@ -24,6 +24,20 @@ if (startNote && !startNote.ERROR)
         tags: startNote.tags
     }
 else data = createNoteData()
+function insertUrlParam(key, value) {
+    if (history.pushState) {
+        let searchParams = new URLSearchParams(window.location.search)
+        searchParams.set(key, value)
+        let newUrl =
+            window.location.protocol +
+            '//' +
+            window.location.host +
+            window.location.pathname +
+            '?' +
+            searchParams.toString()
+        window.history.pushState({ path: newUrl }, '', newUrl)
+    }
+}
 export const loadNote = note => {
     data = {
         type: 'update',
@@ -31,6 +45,7 @@ export const loadNote = note => {
         content: note.content,
         tags: note.tags
     }
+    insertUrlParam('id', note.id)
     document.querySelector('.editPane .editor .edit').value = data.content
     update()
 }
