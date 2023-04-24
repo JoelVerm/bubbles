@@ -1,3 +1,7 @@
+#!/usr/bin/env node
+
+import readline from 'readline'
+import process from 'process'
 import { db } from './db.js'
 
 /**
@@ -20,7 +24,6 @@ const dbQuery = async (query, variables = undefined) =>
  *      tags?:Array<string>,
  *      id?:String
  * }} q
- * @returns
  */
 export async function query(q) {
     let note
@@ -82,10 +85,16 @@ export async function query(q) {
     if (note) return note
 }
 
-/**
- * @param {import('../../main.js').RunningRequest} req
- */
-export async function flami(req) {
-    let q = await req.getPostData()
-    return await query(q)
-}
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+    terminal: false
+})
+
+rl.on('line', async line => {
+    let postData = JSON.parse(line).postData
+    let result = {
+        content: await query(postData)
+    }
+    console.log(JSON.stringify(result))
+})

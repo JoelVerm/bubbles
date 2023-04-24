@@ -1,10 +1,11 @@
-import { query } from './api/data.js'
+#!/usr/bin/env node
 
-/**
- * @param {import('../main.js').RunningRequest} req
- */
-export async function flami(req) {
-    let id = req.params.id
+import { query } from './api/data.js'
+import readline from 'readline'
+import process from 'process'
+
+export async function getData(data) {
+    let id = data.searchParams.id
     if (!id) {
         return {
             startNote: await query({
@@ -16,8 +17,23 @@ export async function flami(req) {
         type: 'get',
         id: id
     })
-    if (result.ERROR) req.redirect('/')
+    if (result.ERROR)
+        return {
+            redirect: '/'
+        }
     return {
-        startNote: result
+        content: {
+            startNote: result
+        }
     }
 }
+
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+    terminal: false
+})
+
+rl.on('line', async line => {
+    console.log(JSON.stringify(await getData(JSON.parse(line))))
+})

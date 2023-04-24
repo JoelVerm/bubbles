@@ -1,13 +1,13 @@
 import sys
+import json
 from keybert import KeyBERT
 
 kw_model = KeyBERT(model='all-mpnet-base-v2')
 
-args = sys.argv
-if (len(args) != 2):
-    raise SystemExit(2)
+inp = input()
+data = json.loads(inp)
 
-full_text = args[1]
+full_text = data["postData"]["text"]
 
 keywords = kw_model.extract_keywords(full_text,
                                      top_n=5)
