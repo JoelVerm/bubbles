@@ -4,6 +4,8 @@ from keybert import KeyBERT
 
 kw_model = KeyBERT(model='all-mpnet-base-v2')
 
+kw_model.model.
+
 inp = input()
 data = json.loads(inp)
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import readline from 'readline'
+import { fileURLToPath } from 'url'
 import process from 'process'
 import { db } from './db.js'
 
@@ -81,20 +81,20 @@ export async function query(q) {
                 )) ?? { ERROR: 'Unable to find matching search results' }
             )
     }
-    note.id = note.id.split(':')[1]
-    if (note) return note
+    if (note) {
+        note.id = note.id.split(':')[1]
+        return note
+    }
 }
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-    terminal: false
-})
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+    const stdin = process.openStdin()
 
-rl.on('line', async line => {
-    let postData = JSON.parse(line).postData
-    let result = {
-        content: await query(postData)
-    }
-    console.log(JSON.stringify(result))
-})
+    stdin.addListener('data', async function (inp) {
+        let postData = JSON.parse(inp).postData
+        let result = {
+            content: JSON.stringify(await query(postData))
+        }
+        console.log(JSON.stringify(result))
+    })
+}

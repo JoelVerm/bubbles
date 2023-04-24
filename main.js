@@ -14,7 +14,9 @@ let args = process.argv
 if (args[2]) serverDirName = args[2]
 
 const flattenValues = obj =>
-    Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, v.flat()]))
+    Object.fromEntries(
+        Object.entries(obj).map(([k, v]) => [k, v.flat ? v.flat() : v])
+    )
 
 let htmlPagePath = pathModule.join(serverDirName, 'page.html')
 let htmlPageText = (await promises.readFile(htmlPagePath)).toString('utf8')
@@ -153,7 +155,8 @@ async function getPostData(req) {
         buffers.push(chunk)
     }
     const data = Buffer.concat(buffers).toString()
-    return qs.parse(data)
+    if (!data) return {}
+    return JSON.parse(data)
 }
 
 function getCookies(req) {

@@ -15,13 +15,13 @@ const createNoteData = () => ({
     tags: []
 })
 let data
-/* global startNote */
-if (startNote && !startNote.ERROR)
+/* global SERVER */
+if (SERVER.startNote && !SERVER.startNote.ERROR)
     data = {
         type: 'update',
-        id: startNote.id,
-        content: startNote.content,
-        tags: startNote.tags
+        id: SERVER.startNote.id,
+        content: SERVER.startNote.content,
+        tags: SERVER.startNote.tags
     }
 else data = createNoteData()
 function insertUrlParam(key, value) {
