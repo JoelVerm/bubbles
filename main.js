@@ -43,6 +43,43 @@ async function getFile(filePath) {
     return cachedFiles[filePath]
 }
 
+const runningServerProcesses = {}
+
+async function handleServerProcesses(path, data) {
+    let serverProgram = runningServerProcesses[path]
+    let serverResponse = ''
+    if (!serverProgram) {
+        let serverPath = pathModule.join(serverDirName, 'server', path)
+        const dirContents = await promises.readdir(
+            pathModule.dirname(serverPath)
+        )
+        const basePath = pathModule.basename(serverPath)
+        const serverFileExtension = dirContents
+            .find(e => e.startsWith(basePath))
+            ?.slice(basePath.length)
+        if (serverFileExtension) {
+            serverProgram = spawn(
+                pathModule.join(
+                    serverDirName,
+                    'server',
+                    `${path}${serverFileExtension}`
+                ),
+                ['']
+            )
+            console.log(`opened new process for ${path}`)
+            runningServerProcesses[path] = serverProgram
+            serverProgram.once('close', () => console.log(`closed ${path}`))
+        }
+    }
+    console.log(data)
+    serverProgram.stdin.write(JSON.stringify(data))
+    serverResponse = await new Promise(resolve => {
+        serverProgram.stdout.once('data', data => resolve(data.toString()))
+    })
+    console.log(serverResponse)
+    return serverResponse
+}
+
 /**
  * @param {String} path
  * @param {{ searchParams: {}, postData: {}, cookies: {} }} data
@@ -65,28 +102,7 @@ async function render(path, data) {
 
     let pagePath = pathModule.join(serverDirName, 'pages', path + '.js')
     if (!existsSync(pagePath)) return null
-    let serverPath = pathModule.join(serverDirName, 'server', path)
-    let serverResponse = ''
-    const dirContents = await promises.readdir(pathModule.dirname(serverPath))
-    const basePath = pathModule.basename(serverPath)
-    const serverFileExtension = dirContents
-        .find(e => e.startsWith(basePath))
-        ?.slice(basePath.length)
-    if (serverFileExtension) {
-        const serverProgram = spawn(
-            pathModule.join(
-                serverDirName,
-                'server',
-                `${path}${serverFileExtension}`
-            ),
-            ['']
-        )
-        serverProgram.stdin.write(JSON.stringify(data))
-        serverResponse = await new Promise((resolve, reject) => {
-            serverProgram.stdout.on('data', data => resolve(data.toString()))
-            serverProgram.stderr.on('data', data => reject(data.toString()))
-        })
-    }
+    let serverResponse = await handleServerProcesses(path, data)
     let response = {}
     try {
         response = JSON.parse(serverResponse)
