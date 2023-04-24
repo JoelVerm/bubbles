@@ -220,6 +220,7 @@ export const page = () => html`
                     autoTagIsLoading ? 'loading' : ''
                 }`}
                 onclick=${async () => {
+                    if (autoTagIsLoading) return
                     autoTagIsLoading = true
                     update()
                     let tagString = await fetch('api/keywords', {
@@ -234,8 +235,7 @@ export const page = () => html`
                         body: JSON.stringify({
                             text: data.content
                         })
-                    }).then(r => r.json())
-                    console.log(tagString)
+                    }).then(r => r.text())
                     data.tags = data.tags.concat(tagString.split(','))
                     autoTagIsLoading = false
                     save()
@@ -263,6 +263,7 @@ export const page = () => html`
                         data.content = e.target.value
                         update()
                     }}
+                    onfocusout=${save}
                 >
                 ${data.content}
             </textarea>
@@ -301,7 +302,7 @@ export const page = () => html`
                             e.preventDefault()
                             e.stopPropagation()
                             data.tags.splice(i, 1)
-                            update()
+                            save()
                         }}
                     >
                         <ion-icon name="trash-outline"></ion-icon>
