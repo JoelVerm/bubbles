@@ -3,7 +3,7 @@ import sys
 import json
 from keybert import KeyBERT
 
-kw_model = KeyBERT(model='all-MiniLM-L12-v2')
+kw_model = KeyBERT(model='paraphrase-multilingual-MiniLM-L12-v2')
 
 while True:
     inp = input()
@@ -12,7 +12,7 @@ while True:
     full_text = data["postData"]["text"]
 
     keywords = kw_model.extract_keywords(full_text,
-                                         top_n=5)
+                                         top_n=10)
 
     keywords_list = list(dict(keywords).keys())
     print(','.join(keywords_list))
