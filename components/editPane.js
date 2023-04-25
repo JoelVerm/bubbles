@@ -265,8 +265,9 @@ export const page = () => html`
                     }}
                     onfocusout=${save}
                 >
-                ${data.content}
-            </textarea>
+                    ${data.content}
+                </textarea
+                >
                 <div class="markdown">
                     ${html([marked.parse(data.content)])}
                 </div>
@@ -281,7 +282,7 @@ export const page = () => html`
                     if (!e.target.innerText) return
                     data.tags.push(e.target.innerText.trim())
                     e.target.innerText = ''
-                    update()
+                    save()
                 }}
                 onkeyup=${e => {
                     if (e.key === 'Enter') {
@@ -289,7 +290,7 @@ export const page = () => html`
                         if (!e.target.innerText) return
                         data.tags.push(e.target.innerText.trim())
                         e.target.innerText = ''
-                        update()
+                        save()
                     }
                 }}
             />
