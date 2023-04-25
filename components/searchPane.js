@@ -10,9 +10,9 @@ export const setSearchTags = tags => {
     searchTags = tags
 }
 
-export const searchableTag = (value, addHtml) =>
+export const searchableTag = (value, addHtml, isSpecial) =>
     html`<span
-        class="tag"
+        class=${`tag ${isSpecial ? 'searchedFor' : ''}`}
         onclick=${e => {
             e.preventDefault()
             e.stopPropagation()
@@ -90,7 +90,7 @@ export const page = () => html`
             .searchPane .results .noteWidget .tags {
                 margin-left: -7px;
             }
-            .searchPane .results .tag {
+            .searchPane .results .tag:not(.searchedFor) {
                 color: var(--col-1);
             }
             .searchPane .tags .tagBar {
@@ -147,7 +147,7 @@ export const page = () => html`
         </div>
         <div class="results">
             ${notesList.map(e =>
-                noteWidget(e, () => loadNote(e), searchableTag)
+                noteWidget(e, () => loadNote(e), searchableTag, searchTags)
             )}
         </div>
     </section>

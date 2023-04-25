@@ -9,8 +9,9 @@ marked.setOptions({
 
 const maxAllowedLines = 5
 const maxAllowedChars = 500
+const maxNumOfTags = 8
 
-export const page = (note, onNoteClick, tagComponent) => {
+export const page = (note, onNoteClick, tagComponent, specialTags) => {
     let content = note.content
     let hasDots = false
     if (content.length > maxAllowedChars) {
@@ -58,6 +59,21 @@ export const page = (note, onNoteClick, tagComponent) => {
             <ion-icon name="link-outline"></ion-icon>
         </div>
         <div class="content">${html([content])}${hasDots ? '...' : ''}</div>
-        <div class="tags">${note.tags.map(t => tagComponent(t))}</div>
+        <div class="tags">
+            ${note.tags
+                .map(tagValue => [
+                    specialTags.some(tag =>
+                        tag
+                            .toLowerCase()
+                            .split('')
+                            .every(t => tagValue.toLowerCase().includes(t))
+                    ),
+                    tagValue
+                ])
+                .sort()
+                .reverse()
+                .slice(0, maxNumOfTags)
+                .map(([isSpecial, t]) => tagComponent(t, '', isSpecial))}
+        </div>
     </div>`
 }
