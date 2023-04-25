@@ -65,23 +65,17 @@ async function handleServerProcesses(path, data) {
                 ),
                 ['']
             )
-            console.log(`opened new process for ${path}`)
             runningServerProcesses[path] = serverProgram
-            serverProgram.once('close', () => {
-                delete runningServerProcesses[path]
-                console.log(`closed ${path}`)
-            })
+            serverProgram.once(
+                'close',
+                () => delete runningServerProcesses[path]
+            )
         } else return ''
     }
-    console.log(JSON.stringify(data))
     serverProgram.stdin.write(JSON.stringify(data) + '\n')
     serverResponse = await new Promise(resolve => {
         serverProgram.stdout.once('data', data => resolve(data.toString()))
-        serverProgram.stderr.once('data', data =>
-            console.error(data.toString())
-        )
     })
-    console.log('response: ', serverResponse)
     return serverResponse
 }
 
