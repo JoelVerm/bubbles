@@ -2,7 +2,6 @@
 import { createServer } from 'http'
 import { Buffer } from 'buffer'
 import { promises, existsSync } from 'fs'
-import qs from 'querystring'
 import { URL } from 'url'
 import { spawn } from 'child_process'
 import process from 'process'
@@ -218,7 +217,6 @@ async function handleReq(req, res) {
     if (!reqIPs[ip]) reqIPs[ip] = new RequestCounter()
     reqIPs[ip].tick()
     if (reqIPs[ip].isInvalid()) {
-        /* global console */
         console.log(`access denied to ${ip} for spamming`)
         res.writeHead(429, {
             'Retry-After': serverOptions.timeoutMinutes / 60
