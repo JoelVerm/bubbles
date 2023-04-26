@@ -40,7 +40,6 @@ export const page = (note, onNoteClick, tagComponent, specialTags) => {
                 width: 100%;
             }
             .noteWidget .linkButton {
-                aspect-ratio: 1;
                 position: absolute;
                 top: 7px;
                 right: 7px;
@@ -53,7 +52,18 @@ export const page = (note, onNoteClick, tagComponent, specialTags) => {
             onclick=${e => {
                 e.preventDefault()
                 e.stopPropagation()
+                const button = e.target.closest('.linkButton')
+                if (
+                    Array.from(button.childNodes).filter(
+                        e =>
+                            !(e.nodeType == Node.TEXT_NODE) ||
+                            e.textContent.trim()
+                    ).length > 1
+                )
+                    return
                 navigator.clipboard.writeText(`[link](/?id=${note.id})`)
+                button.prepend('copied link')
+                setTimeout(() => button.childNodes[0].remove(), 1000)
             }}
         >
             <ion-icon name="link-outline"></ion-icon>
