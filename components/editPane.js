@@ -158,6 +158,18 @@ export const page = () => html`
             .editPane .editor .markdown .katex-html {
                 display: none;
             }
+            .editPane .editor .markdown table {
+                border: 2px solid var(--bg-3);
+                border-radius: 5px;
+                padding: 7px;
+                border-spacing: 0px;
+            }
+            .editPane .editor .markdown table tbody tr:nth-child(2n - 1) {
+                background-color: var(--bg-3);
+            }
+            .editPane .editor .markdown table td {
+                padding: 5px;
+            }
 
             .editPane .tags {
                 height: 25%;
