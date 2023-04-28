@@ -8,6 +8,21 @@ marked.setOptions({
     smartypants: true
 })
 
+const renderer = {
+    heading(text, level) {
+        if (level !== 1) return false
+        if (text.startsWith('columns start'))
+            return '<div class="columns"><div class="column">'
+        if (text.startsWith('columns new')) return '</div><div class="column">'
+        if (text.startsWith('columns end')) return '</div></div>'
+        return false
+    }
+}
+
+marked.use({ renderer })
+
+console.log(marked)
+
 const createNoteData = () => ({
     type: 'add',
     id: null,
@@ -154,6 +169,7 @@ export const page = () => html`
             }
             .editPane .editor .markdown img {
                 width: 100%;
+                border-radius: 5px;
             }
             .editPane .editor .markdown .katex-html {
                 display: none;
@@ -169,6 +185,19 @@ export const page = () => html`
             }
             .editPane .editor .markdown table td {
                 padding: 5px;
+            }
+            .editPane .editor .markdown .columns {
+                display: flex;
+            }
+            .editPane .editor .markdown .columns > * {
+                flex: 0;
+            }
+            .editPane .editor .markdown .columns > .column {
+                flex: 1;
+                padding: 7px;
+            }
+            .editPane .editor .markdown .columns > .column:not(:last-of-type) {
+                border-right: 2px solid var(--bg-3);
             }
 
             .editPane .tags {
