@@ -104,7 +104,7 @@ export const page = () => html`
         <div class="topBar">
             <input
                 type="text"
-                class="searchBar"
+                class="searchBar button"
                 placeholder="Search text..."
                 onkeyup=${e => {
                     searchTerm = e.target.value.trim()

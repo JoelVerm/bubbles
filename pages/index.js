@@ -65,8 +65,9 @@ flami(
                 .button:not([disabled]):hover {
                     background-color: var(--color-bg-1);
                 }
-                .button:active {
-                    filter: brightness(70%);
+                .button:active,
+                .button:hover:active {
+                    background-color: var(--color-bg-2);
                 }
                 .button[disabled] {
                     filter: brightness(50%);
