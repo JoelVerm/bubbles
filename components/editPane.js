@@ -300,6 +300,13 @@ export const page = () => html`
                     contenteditable
                     placeholder="Create a note..."
                     onkeyup=${e => {
+                        if (e.ctrlKey && e.key === 's') {
+                            e.cancelBubble = true
+                            e.preventDefault()
+                            e.stopPropagation()
+                            save()
+                            return false
+                        }
                         data.content = e.target.value
                         update()
                     }}
