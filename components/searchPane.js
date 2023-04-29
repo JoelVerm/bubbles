@@ -12,7 +12,7 @@ export const setSearchTags = tags => {
 
 export const searchableTag = (value, addHtml, isSpecial) =>
     html`<span
-        class=${`tag ${isSpecial ? 'searchedFor' : ''}`}
+        class=${`tag button ${isSpecial ? 'searchedFor' : ''}`}
         onclick=${e => {
             e.preventDefault()
             e.stopPropagation()
@@ -116,7 +116,7 @@ export const page = () => html`
             <span
                 role="textbox"
                 contenteditable
-                class="tag tagBar"
+                class="tag tagBar button"
                 onfocusout=${e => {
                     if (!e.target.innerText) return
                     searchTags.push(e.target.innerText.trim())

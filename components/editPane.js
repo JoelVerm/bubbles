@@ -194,7 +194,7 @@ export const page = () => html`
                 padding: 7px;
             }
             .editPane .editor .markdown .columns > .column:not(:last-of-type) {
-                border-right: 2px solid var(--bg-3);
+                border-right: 2px solid var(--color-bg-2);
             }
 
             .editPane .tags {
@@ -313,7 +313,7 @@ export const page = () => html`
             <span
                 role="textbox"
                 contenteditable
-                class="tag tagBar"
+                class="tag tagBar button"
                 onfocusout=${e => {
                     if (!e.target.innerText) return
                     data.tags.push(e.target.innerText.trim())
