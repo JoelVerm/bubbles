@@ -52,7 +52,6 @@ export const page = () => html`
     <section class="searchPane">
         <style>
             .searchPane {
-                background-color: var(--bg-1);
                 display: flex;
                 flex-direction: column;
             }
@@ -60,10 +59,12 @@ export const page = () => html`
                 width: calc(100% - 14px);
                 margin: 7px;
                 padding: 0.5rem;
-                background-color: var(--bg-3);
+                background-color: var(--color-bg-2);
                 outline: none;
                 border: none;
                 border-radius: 5px;
+                color: var(--color-contrast-dim);
+                z-index: 20;
             }
             .searchPane > .tags .tag {
                 position: relative;
@@ -84,21 +85,20 @@ export const page = () => html`
                 margin-bottom: 7px;
                 margin-left: 7px;
                 padding: 0.5rem;
-                background-color: var(--bg-2);
                 border-radius: 5px;
             }
             .searchPane .results .noteWidget .tags {
                 margin-left: -7px;
             }
-            .searchPane .results .tag:not(.searchedFor) {
-                color: var(--col-1);
+            .searchPane .results .tag.searchedFor {
+                color: var(--color-accent);
             }
             .searchPane .tags .tagBar {
                 cursor: text;
             }
             .searchPane .tags .tagBar:empty::before {
                 content: 'Search a tag...';
-                color: #888;
+                color: var(--color-contrast-dim);
             }
         </style>
         <div class="topBar">

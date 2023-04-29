@@ -102,7 +102,6 @@ export const page = () => html`
         <style>
             .editPane {
                 position: relative;
-                background-color: var(--bg-1);
                 overflow: hidden;
             }
 
@@ -122,7 +121,6 @@ export const page = () => html`
 
             .editPane .editor {
                 height: calc(75% - 50px);
-                background-color: var(--bg-1);
                 overflow-y: auto;
             }
             .editPane .editorScroll {
@@ -131,15 +129,14 @@ export const page = () => html`
             .editPane .editor .edit {
                 white-space: pre-wrap;
                 flex: 0 0 50%;
-                background-color: var(--bg-1);
                 padding: 10px;
                 outline: none;
                 border: none;
                 resize: none;
+                background-color: rgba(0, 0, 0, 0);
             }
             .editPane .editor .markdown {
                 flex: 0 0 50%;
-                background-color: var(--bg-1);
                 padding: 10px;
             }
             h1,
@@ -153,7 +150,7 @@ export const page = () => html`
             }
             .editPane .editor .markdown h1 {
                 font-size: 1.4rem;
-                color: var(--col-1);
+                color: var(--color-accent);
             }
             .editPane .editor .markdown h2 {
                 font-size: 1.3rem;
@@ -165,7 +162,7 @@ export const page = () => html`
                 font-size: 1.1rem;
             }
             .editPane .editor .markdown > :first-child:not(:has(br)) {
-                color: var(--col-1);
+                color: var(--color-accent);
             }
             .editPane .editor .markdown img {
                 width: 100%;
@@ -175,13 +172,13 @@ export const page = () => html`
                 display: none;
             }
             .editPane .editor .markdown table {
-                border: 2px solid var(--bg-3);
+                border: 2px solid var(--color-bg-2);
                 border-radius: 5px;
                 padding: 7px;
                 border-spacing: 0px;
             }
             .editPane .editor .markdown table tbody tr:nth-child(2n - 1) {
-                background-color: var(--bg-3);
+                background-color: var(--color-bg-2);
             }
             .editPane .editor .markdown table td {
                 padding: 5px;
@@ -202,13 +199,12 @@ export const page = () => html`
 
             .editPane .tags {
                 height: 25%;
-                background-color: var(--bg-2);
+                background-color: var(--color-bg-2);
                 border-radius: 0px 15px 0px 0px;
             }
             .editPane .tag {
                 position: relative;
                 padding-right: 30px;
-                color: var(--col-1);
             }
             .editPane .tags .deleteButton {
                 position: absolute;
@@ -218,11 +214,10 @@ export const page = () => html`
             }
             .editPane .tags .tagBar {
                 cursor: text;
-                color: var(--col-txt);
             }
             .editPane .tags .tagBar:empty::before {
                 content: 'Add a tag...';
-                color: #888;
+                color: var(--color-contrast-dim);
             }
         </style>
         <div class="topBar">
