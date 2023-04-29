@@ -221,7 +221,7 @@ export const page = () => html`
             }
         </style>
         <div class="topBar">
-            <div
+            <button
                 class="button newButton"
                 onclick=${async () => {
                     data = createNoteData()
@@ -229,13 +229,14 @@ export const page = () => html`
                         data.content
                     update()
                 }}
+                tabindex="0"
             >
                 <ion-icon name="document-outline"></ion-icon>
-            </div>
-            <div class="button saveButton" onclick=${save}>
+            </button>
+            <button class="button saveButton" onclick=${save} tabindex="0">
                 <ion-icon name="checkmark-done-outline"></ion-icon>
-            </div>
-            <div
+            </button>
+            <button
                 class="button deleteButton"
                 onclick=${async () => {
                     await request({
@@ -247,11 +248,12 @@ export const page = () => html`
                         data.content
                     search()
                 }}
+                tabindex="0"
             >
                 <ion-icon name="trash-outline"></ion-icon>
-            </div>
+            </button>
             <div class="spacer"></div>
-            <div
+            <button
                 class=${`button autoTagButton ${
                     autoTagIsLoading ? 'loading' : ''
                 }`}
@@ -276,18 +278,20 @@ export const page = () => html`
                     autoTagIsLoading = false
                     save()
                 }}
+                tabindex="0"
             >
                 <ion-icon name="pricetags-outline"></ion-icon>
-            </div>
-            <div
+            </button>
+            <button
                 class="button searchTagsButton"
                 onclick=${() => {
                     setSearchTags([...data.tags])
                     search()
                 }}
+                tabindex="0"
             >
                 <ion-icon name="search-outline"></ion-icon>
-            </div>
+            </button>
         </div>
         <div class="editor">
             <div class="editorScroll">

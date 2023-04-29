@@ -11,7 +11,7 @@ export const setSearchTags = tags => {
 }
 
 export const searchableTag = (value, addHtml, isSpecial) =>
-    html`<span
+    html`<button
         class=${`tag button ${isSpecial ? 'searchedFor' : ''}`}
         onclick=${e => {
             e.preventDefault()
@@ -19,8 +19,10 @@ export const searchableTag = (value, addHtml, isSpecial) =>
             searchTags.push(value)
             search()
         }}
-        >${value}${addHtml}</span
-    >`
+        tabindex="0"
+    >
+        ${value}${addHtml}
+    </button>`
 
 const request = data =>
     fetch('api/data', {
@@ -80,12 +82,20 @@ export const page = () => html`
                 flex: 1;
                 margin-top: 7px;
             }
+            .searchPane .results:focus-visible {
+                outline: 2px solid var(--color-contrast-dim) !important;
+            }
             .searchPane .results .noteWidget {
                 width: calc(100% - 14px);
+                background-color: rgba(0, 0, 0, 0);
+                text-align: left;
                 margin-bottom: 7px;
                 margin-left: 7px;
                 padding: 0.5rem;
                 border-radius: 5px;
+            }
+            .searchPane .results .noteWidget:focus-visible {
+                outline: 2px solid var(--color-contrast-dim) !important;
             }
             .searchPane .results .noteWidget .tags {
                 margin-left: -7px;
@@ -135,17 +145,18 @@ export const page = () => html`
             />
             ${searchTags.map(
                 (t, i) =>
-                    html`<span
+                    html`<button
                         class="tag button"
                         onclick=${() => {
                             searchTags.splice(i, 1)
                             search()
                         }}
-                        >${t}<ion-icon name="close-outline"></ion-icon
-                    ></span>`
+                    >
+                        ${t}<ion-icon name="close-outline"></ion-icon>
+                    </button>`
             )}
         </div>
-        <div class="results">
+        <div class="results" tabindex="0">
             ${notesList.map(e =>
                 noteWidget(e, () => loadNote(e), searchableTag, searchTags)
             )}

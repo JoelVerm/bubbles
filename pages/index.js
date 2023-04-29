@@ -34,6 +34,13 @@ flami(
                     height: 100vh;
                 }
 
+                button {
+                    display: inline-block;
+                    border: none;
+                    -webkit-appearance: none;
+                    -moz-appearance: none;
+                }
+
                 .editPane {
                     flex: 2;
                 }
@@ -72,6 +79,9 @@ flami(
                 .button[disabled] {
                     filter: brightness(50%);
                 }
+                .button:focus-visible {
+                    outline: 2px solid var(--color-contrast-dim) !important;
+                }
 
                 .tag {
                     display: inline-block;
@@ -80,7 +90,6 @@ flami(
                     margin-left: 7px;
                     padding: 0.5rem;
                     background-color: var(--color-bg-2);
-                    outline: none;
                     border: none;
                     border-radius: 5px;
                     cursor: pointer;
