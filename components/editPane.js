@@ -344,7 +344,7 @@ export const page = () => html`
             ${data.tags.map((t, i) =>
                 searchableTag(
                     t,
-                    html`<div
+                    html`<button
                         class="button deleteButton"
                         onclick=${e => {
                             e.preventDefault()
@@ -352,9 +352,10 @@ export const page = () => html`
                             data.tags.splice(i, 1)
                             save()
                         }}
+                        tabindex="0"
                     >
                         <ion-icon name="trash-outline"></ion-icon>
-                    </div>`
+                    </button>`
                 )
             )}
         </div>

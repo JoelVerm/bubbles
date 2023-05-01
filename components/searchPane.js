@@ -19,7 +19,7 @@ export const searchableTag = (value, addHtml, isSpecial) =>
             searchTags.push(value)
             search()
         }}
-        tabindex="0"
+        tabindex="-1"
     >
         ${value}${addHtml}
     </button>`
