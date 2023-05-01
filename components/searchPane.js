@@ -11,16 +11,18 @@ export const setSearchTags = tags => {
 }
 
 export const searchableTag = (value, addHtml, isSpecial) =>
-    html`<span
-        class=${`tag ${isSpecial ? 'searchedFor' : ''}`}
+    html`<button
+        class=${`tag button ${isSpecial ? 'searchedFor' : ''}`}
         onclick=${e => {
             e.preventDefault()
             e.stopPropagation()
             searchTags.push(value)
             search()
         }}
-        >${value}${addHtml}</span
-    >`
+        tabindex="-1"
+    >
+        ${value}${addHtml}
+    </button>`
 
 const request = data =>
     fetch('api/data', {
@@ -52,7 +54,6 @@ export const page = () => html`
     <section class="searchPane">
         <style>
             .searchPane {
-                background-color: var(--bg-1);
                 display: flex;
                 flex-direction: column;
             }
@@ -60,10 +61,12 @@ export const page = () => html`
                 width: calc(100% - 14px);
                 margin: 7px;
                 padding: 0.5rem;
-                background-color: var(--bg-3);
+                background-color: var(--color-bg-2);
                 outline: none;
                 border: none;
-                border-radius: 5px;
+                border-radius: 1000vmax;
+                color: var(--color-contrast-dim);
+                z-index: 20;
             }
             .searchPane > .tags .tag {
                 position: relative;
@@ -79,32 +82,39 @@ export const page = () => html`
                 flex: 1;
                 margin-top: 7px;
             }
+            .searchPane .results:focus-visible {
+                outline: 2px solid var(--color-contrast-dim) !important;
+            }
             .searchPane .results .noteWidget {
                 width: calc(100% - 14px);
+                background-color: rgba(0, 0, 0, 0);
+                text-align: left;
                 margin-bottom: 7px;
                 margin-left: 7px;
                 padding: 0.5rem;
-                background-color: var(--bg-2);
                 border-radius: 5px;
+            }
+            .searchPane .results .noteWidget:focus-visible {
+                outline: 2px solid var(--color-contrast-dim) !important;
             }
             .searchPane .results .noteWidget .tags {
                 margin-left: -7px;
             }
-            .searchPane .results .tag:not(.searchedFor) {
-                color: var(--col-1);
+            .searchPane .results .tag.searchedFor {
+                color: var(--color-accent);
             }
             .searchPane .tags .tagBar {
                 cursor: text;
             }
             .searchPane .tags .tagBar:empty::before {
                 content: 'Search a tag...';
-                color: #888;
+                color: var(--color-contrast-dim);
             }
         </style>
         <div class="topBar">
             <input
                 type="text"
-                class="searchBar"
+                class="searchBar button"
                 placeholder="Search text..."
                 onkeyup=${e => {
                     searchTerm = e.target.value.trim()
@@ -116,7 +126,7 @@ export const page = () => html`
             <span
                 role="textbox"
                 contenteditable
-                class="tag tagBar"
+                class="tag tagBar button"
                 onfocusout=${e => {
                     if (!e.target.innerText) return
                     searchTags.push(e.target.innerText.trim())
@@ -135,17 +145,18 @@ export const page = () => html`
             />
             ${searchTags.map(
                 (t, i) =>
-                    html`<span
+                    html`<button
                         class="tag button"
                         onclick=${() => {
                             searchTags.splice(i, 1)
                             search()
                         }}
-                        >${t}<ion-icon name="close-outline"></ion-icon
-                    ></span>`
+                    >
+                        ${t}<ion-icon name="close-outline"></ion-icon>
+                    </button>`
             )}
         </div>
-        <div class="results">
+        <div class="results" tabindex="0">
             ${notesList.map(e =>
                 noteWidget(e, () => loadNote(e), searchableTag, searchTags)
             )}

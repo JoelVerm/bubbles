@@ -1,0 +1,28 @@
+[
+  {
+    "_id": "4de56b0b-603f-4407-aa68-c74f5a8e974e",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://localhost:8000/sql",
+    "url": "http://localhost:8000/sql",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2023-05-01T13:05:57.836Z",
+    "modified": "2023-05-01T13:05:57.836Z",
+    "headers": [
+      {
+        "name": "Accept",
+        "value": "application/json"
+      }
+    ],
+    "params": [],
+    "auth": {
+      "type": "basic",
+      "basic": {
+        "username": "root",
+        "password": "root"
+      }
+    },
+    "tests": []
+  }
+]

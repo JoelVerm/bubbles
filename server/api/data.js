@@ -19,7 +19,7 @@ const dbQuery = async (query, variables = undefined) =>
 /**
  *
  * @param {{
- *      type: 'add' | 'update' | 'get' | 'delete'| 'random' | 'query' | 'related',
+ *      type: 'add' | 'update' | 'get' | 'delete'| 'random' | 'query' | 'timeline',
  *      content?:String,
  *      tags?:Array<string>,
  *      id?:String
@@ -32,7 +32,9 @@ export async function query(q) {
             note = await db
                 .create('notes', {
                     content: q.content,
-                    tags: q.tags
+                    tags: q.tags,
+                    time_created: new Date().toISOString(),
+                    time_updated: new Date().toISOString()
                 })
                 .catch(console.error)
             break
@@ -45,6 +47,7 @@ export async function query(q) {
                 })
             if (q.content) note.content = q.content
             if (q.tags) note.tags = q.tags
+            note.time_updated = new Date().toISOString()
             await db.update(`notes:${q.id}`, note).catch(console.error)
             break
         case 'get':
@@ -79,6 +82,12 @@ export async function query(q) {
                         content: q.content
                     }
                 )) ?? { ERROR: 'Unable to find matching search results' }
+            )
+        case 'timeline':
+            return (
+                (await dbQuery(
+                    'SELECT string::slice(content, 0, 50) as firstWords, time_created, id FROM notes ORDER BY time_created DESC'
+                )) ?? { ERROR: 'Unable to get the timeline' }
             )
     }
     if (note) {

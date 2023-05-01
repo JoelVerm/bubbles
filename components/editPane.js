@@ -102,10 +102,24 @@ export const page = () => html`
         <style>
             .editPane {
                 position: relative;
-                background-color: var(--bg-1);
                 overflow: hidden;
             }
 
+            .editPane .topBar .button:nth-of-type(5n + 1) {
+                animation: var(--blob1);
+            }
+            .editPane .topBar .button:nth-of-type(5n + 2) {
+                animation: var(--blob2);
+            }
+            .editPane .topBar .button:nth-of-type(5n + 3) {
+                animation: var(--blob3);
+            }
+            .editPane .topBar .button:nth-of-type(5n + 4) {
+                animation: var(--blob4);
+            }
+            .editPane .topBar .button:nth-of-type(5n + 5) {
+                animation: var(--blob5);
+            }
             @keyframes bobbingButton {
                 from,
                 80%,
@@ -122,7 +136,6 @@ export const page = () => html`
 
             .editPane .editor {
                 height: calc(75% - 50px);
-                background-color: var(--bg-1);
                 overflow-y: auto;
             }
             .editPane .editorScroll {
@@ -131,15 +144,14 @@ export const page = () => html`
             .editPane .editor .edit {
                 white-space: pre-wrap;
                 flex: 0 0 50%;
-                background-color: var(--bg-1);
                 padding: 10px;
                 outline: none;
                 border: none;
                 resize: none;
+                background-color: rgba(0, 0, 0, 0);
             }
             .editPane .editor .markdown {
                 flex: 0 0 50%;
-                background-color: var(--bg-1);
                 padding: 10px;
             }
             h1,
@@ -153,7 +165,7 @@ export const page = () => html`
             }
             .editPane .editor .markdown h1 {
                 font-size: 1.4rem;
-                color: var(--col-1);
+                color: var(--color-accent);
             }
             .editPane .editor .markdown h2 {
                 font-size: 1.3rem;
@@ -165,7 +177,7 @@ export const page = () => html`
                 font-size: 1.1rem;
             }
             .editPane .editor .markdown > :first-child:not(:has(br)) {
-                color: var(--col-1);
+                color: var(--color-accent);
             }
             .editPane .editor .markdown img {
                 width: 100%;
@@ -175,13 +187,13 @@ export const page = () => html`
                 display: none;
             }
             .editPane .editor .markdown table {
-                border: 2px solid var(--bg-3);
+                border: 2px solid var(--color-bg-2);
                 border-radius: 5px;
                 padding: 7px;
                 border-spacing: 0px;
             }
             .editPane .editor .markdown table tbody tr:nth-child(2n - 1) {
-                background-color: var(--bg-3);
+                background-color: var(--color-bg-2);
             }
             .editPane .editor .markdown table td {
                 padding: 5px;
@@ -197,36 +209,38 @@ export const page = () => html`
                 padding: 7px;
             }
             .editPane .editor .markdown .columns > .column:not(:last-of-type) {
-                border-right: 2px solid var(--bg-3);
+                border-right: 2px solid var(--color-bg-2);
             }
 
             .editPane .tags {
                 height: 25%;
-                background-color: var(--bg-2);
+                background-color: var(--color-bg-2);
                 border-radius: 0px 15px 0px 0px;
             }
             .editPane .tag {
                 position: relative;
                 padding-right: 30px;
-                color: var(--col-1);
             }
             .editPane .tags .deleteButton {
                 position: absolute;
                 top: 0px;
                 right: 0px;
                 padding: 7px;
+                animation: var(--blob5);
+            }
+            .editPane .tags .tag.button:hover:has(.button:hover) {
+                background-color: var(--color-bg-2);
             }
             .editPane .tags .tagBar {
                 cursor: text;
-                color: var(--col-txt);
             }
             .editPane .tags .tagBar:empty::before {
                 content: 'Add a tag...';
-                color: #888;
+                color: var(--color-contrast-dim);
             }
         </style>
         <div class="topBar">
-            <div
+            <button
                 class="button newButton"
                 onclick=${async () => {
                     data = createNoteData()
@@ -234,13 +248,14 @@ export const page = () => html`
                         data.content
                     update()
                 }}
+                tabindex="0"
             >
                 <ion-icon name="document-outline"></ion-icon>
-            </div>
-            <div class="button saveButton" onclick=${save}>
+            </button>
+            <button class="button saveButton" onclick=${save} tabindex="0">
                 <ion-icon name="checkmark-done-outline"></ion-icon>
-            </div>
-            <div
+            </button>
+            <button
                 class="button deleteButton"
                 onclick=${async () => {
                     await request({
@@ -252,11 +267,12 @@ export const page = () => html`
                         data.content
                     search()
                 }}
+                tabindex="0"
             >
                 <ion-icon name="trash-outline"></ion-icon>
-            </div>
+            </button>
             <div class="spacer"></div>
-            <div
+            <button
                 class=${`button autoTagButton ${
                     autoTagIsLoading ? 'loading' : ''
                 }`}
@@ -281,18 +297,20 @@ export const page = () => html`
                     autoTagIsLoading = false
                     save()
                 }}
+                tabindex="0"
             >
                 <ion-icon name="pricetags-outline"></ion-icon>
-            </div>
-            <div
+            </button>
+            <button
                 class="button searchTagsButton"
                 onclick=${() => {
                     setSearchTags([...data.tags])
                     search()
                 }}
+                tabindex="0"
             >
                 <ion-icon name="search-outline"></ion-icon>
-            </div>
+            </button>
         </div>
         <div class="editor">
             <div class="editorScroll">
@@ -301,6 +319,13 @@ export const page = () => html`
                     contenteditable
                     placeholder="Create a note..."
                     onkeyup=${e => {
+                        if (e.ctrlKey && e.key === 's') {
+                            e.cancelBubble = true
+                            e.preventDefault()
+                            e.stopPropagation()
+                            save()
+                            return false
+                        }
                         data.content = e.target.value
                         update()
                     }}
@@ -318,7 +343,7 @@ export const page = () => html`
             <span
                 role="textbox"
                 contenteditable
-                class="tag tagBar"
+                class="tag tagBar button"
                 onfocusout=${e => {
                     if (!e.target.innerText) return
                     data.tags.push(e.target.innerText.trim())
@@ -338,7 +363,7 @@ export const page = () => html`
             ${data.tags.map((t, i) =>
                 searchableTag(
                     t,
-                    html`<div
+                    html`<button
                         class="button deleteButton"
                         onclick=${e => {
                             e.preventDefault()
@@ -346,9 +371,10 @@ export const page = () => html`
                             data.tags.splice(i, 1)
                             save()
                         }}
+                        tabindex="0"
                     >
                         <ion-icon name="trash-outline"></ion-icon>
-                    </div>`
+                    </button>`
                 )
             )}
         </div>

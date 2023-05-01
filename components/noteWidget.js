@@ -28,7 +28,7 @@ export const page = (note, onNoteClick, tagComponent, specialTags) => {
         content = contentLines.slice(0, maxAllowedLines).join('\n')
     }
     content = marked.parse(content)
-    return html`<div class="noteWidget" onclick=${onNoteClick}>
+    return html`<button class="noteWidget" onclick=${onNoteClick} tabindex="0">
         <style>
             .noteWidget {
                 position: relative;
@@ -85,5 +85,5 @@ export const page = (note, onNoteClick, tagComponent, specialTags) => {
                 .slice(0, maxNumOfTags)
                 .map(([isSpecial, t]) => tagComponent(t, '', isSpecial))}
         </div>
-    </div>`
+    </button>`
 }
