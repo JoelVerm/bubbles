@@ -19,7 +19,7 @@ const dbQuery = async (query, variables = undefined) =>
 /**
  *
  * @param {{
- *      type: 'add' | 'update' | 'get' | 'delete'| 'random' | 'query' | 'related',
+ *      type: 'add' | 'update' | 'get' | 'delete'| 'random' | 'query' | 'timeline',
  *      content?:String,
  *      tags?:Array<string>,
  *      id?:String
@@ -82,6 +82,12 @@ export async function query(q) {
                         content: q.content
                     }
                 )) ?? { ERROR: 'Unable to find matching search results' }
+            )
+        case 'timeline':
+            return (
+                (await dbQuery(
+                    'SELECT string::slice(content, 0, 50) as firstWords, time_created, id FROM notes ORDER BY time_created DESC'
+                )) ?? { ERROR: 'Unable to get the timeline' }
             )
     }
     if (note) {
