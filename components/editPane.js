@@ -219,6 +219,9 @@ export const page = () => html`
                 content: 'Add a tag...';
                 color: var(--color-contrast-dim);
             }
+            .editPane .tags .tag.button:hover:has(.button:hover) {
+                background-color: var(--color-bg-2);
+            }
         </style>
         <div class="topBar">
             <button
