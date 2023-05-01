@@ -3,17 +3,21 @@ import { css } from '../components/css.js'
 
 /* global SERVER */
 
-const now = Date.now()
 let timeline = SERVER.timeline.map(e => ({
     ...e,
-    time_passed: (now - new Date(e.time_created).valueOf()) / 1000
+    date: new Date(e.time_created).toDateString(),
+    hour: new Date(e.time_created).getHours()
 }))
-const firstTime = timeline[0].time_passed
-const lastTime = timeline.at(-1).time_passed
-timeline = timeline.map(e => ({
-    ...e,
-    time_passed: e.time_passed - firstTime
-}))
+let days = timeline.reduce(function (r, e) {
+    const day = e.date
+    const hour = e.hour
+    r[day] ??= {}
+    r[day][hour] ??= []
+    r[day][hour].push(e)
+    return r
+}, {})
+
+console.log(days)
 
 flami(
     () => html`
@@ -22,37 +26,30 @@ flami(
                 ${css}
             </style>
             <style>
-                ${`
-                    .timeline {
-                        --timelineSecondScale: 1;
-                        height: max(100vh, calc(${
-                            lastTime - firstTime
-                        }px * var(--timelineSecondScale) + 3em));
-                    }
-                `}
-            </style>
-            <style>
-                main {
-                    overflow-y: auto;
-                }
                 .timeline {
                     position: relative;
-                    width: 100%;
-                    margin: 7px;
+                    margin: 20px;
+                    border-left: 5px solid var(--color-bg-2);
+                    overflow-y: auto;
+                    padding-right: 20px;
+                }
+                .timeline .day {
+                    padding-left: 20px;
+                }
+                .timeline .hour {
+                    padding-left: 20px;
+                    border-left: 5px solid var(--color-bg-2);
+                }
+                .timeline .hour h2 {
+                    display: inline-block;
                 }
                 .timeline .entry {
-                    position: absolute;
-                    top: calc(
-                        var(--timelineHeight) * var(--timelineSecondScale) * 1px
-                    );
-                    left: 50%;
-                    translate: calc(
-                            -100% + 100% * var(--right) - 10px + 20px * var(--right)
-                        )
-                        0px;
+                    display: inline-block;
                     background-color: var(--color-bg-2);
                     border-radius: 1000vmax;
                     padding: 5px;
+                    margin-right: 10px;
+                    margin-bottom: 10px;
                 }
                 .timeline .entry:focus-visible {
                     outline: 2px solid var(--color-contrast-dim) !important;
@@ -60,18 +57,32 @@ flami(
             </style>
             ${cursor()}
             <div class="timeline">
-                ${timeline.map(
-                    (e, i) =>
+                ${Object.entries(days).map(
+                    ([day_key, hours]) =>
                         html`
-                            <a
-                                href=${`/?id=${e.id}`}
-                                class="entry"
-                                style=${`--timelineHeight: ${
-                                    e.time_passed
-                                }; --right: ${i % 2};`}
-                            >
-                                ${e.firstWords}...
-                            </a>
+                            <div class="day">
+                                <h1>${day_key}</h1>
+                                ${Object.entries(hours).map(
+                                    ([hour_key, notes]) => html`
+                                        <div class="hour">
+                                            <h2>
+                                                ${hour_key}h -
+                                                ${Number(hour_key) + 1}h
+                                            </h2>
+                                            <div class="entries">
+                                                ${notes.map(
+                                                    e => html`<a
+                                                        href=${`/?id=${e.id}`}
+                                                        class="entry button"
+                                                    >
+                                                        ${e.firstWords}...
+                                                    </a>`
+                                                )}
+                                            </div>
+                                        </div>
+                                    `
+                                )}
+                            </div>
                         `
                 )}
             </div>
