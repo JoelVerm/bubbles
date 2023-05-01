@@ -32,7 +32,9 @@ export async function query(q) {
             note = await db
                 .create('notes', {
                     content: q.content,
-                    tags: q.tags
+                    tags: q.tags,
+                    time_created: new Date().toISOString(),
+                    time_updated: new Date().toISOString()
                 })
                 .catch(console.error)
             break
@@ -45,6 +47,7 @@ export async function query(q) {
                 })
             if (q.content) note.content = q.content
             if (q.tags) note.tags = q.tags
+            note.time_updated = new Date().toISOString()
             await db.update(`notes:${q.id}`, note).catch(console.error)
             break
         case 'get':
