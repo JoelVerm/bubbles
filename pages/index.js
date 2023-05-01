@@ -62,7 +62,7 @@ flami(
                     background-color: var(--color-bg-2);
                 }
                 .button {
-                    border-radius: 5px;
+                    border-radius: 1000vmax;
                     transition: filter 0.2s, background-color 0.2s;
                     background-color: inherit;
                 }
@@ -91,7 +91,7 @@ flami(
                     padding: 0.5rem;
                     background-color: var(--color-bg-2);
                     border: none;
-                    border-radius: 5px;
+                    border-radius: 1000vmax;
                     cursor: pointer;
                 }
 

@@ -105,6 +105,21 @@ export const page = () => html`
                 overflow: hidden;
             }
 
+            .editPane .topBar .button:nth-of-type(5n + 1) {
+                animation: var(--blob1);
+            }
+            .editPane .topBar .button:nth-of-type(5n + 2) {
+                animation: var(--blob2);
+            }
+            .editPane .topBar .button:nth-of-type(5n + 3) {
+                animation: var(--blob3);
+            }
+            .editPane .topBar .button:nth-of-type(5n + 4) {
+                animation: var(--blob4);
+            }
+            .editPane .topBar .button:nth-of-type(5n + 5) {
+                animation: var(--blob5);
+            }
             @keyframes bobbingButton {
                 from,
                 80%,
@@ -211,6 +226,10 @@ export const page = () => html`
                 top: 0px;
                 right: 0px;
                 padding: 7px;
+                animation: var(--blob5);
+            }
+            .editPane .tags .tag.button:hover:has(.button:hover) {
+                background-color: var(--color-bg-2);
             }
             .editPane .tags .tagBar {
                 cursor: text;
@@ -218,9 +237,6 @@ export const page = () => html`
             .editPane .tags .tagBar:empty::before {
                 content: 'Add a tag...';
                 color: var(--color-contrast-dim);
-            }
-            .editPane .tags .tag.button:hover:has(.button:hover) {
-                background-color: var(--color-bg-2);
             }
         </style>
         <div class="topBar">

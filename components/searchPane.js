@@ -64,7 +64,7 @@ export const page = () => html`
                 background-color: var(--color-bg-2);
                 outline: none;
                 border: none;
-                border-radius: 5px;
+                border-radius: 1000vmax;
                 color: var(--color-contrast-dim);
                 z-index: 20;
             }
