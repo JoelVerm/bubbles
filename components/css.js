@@ -22,10 +22,6 @@ body {
     --blob4: blob4 20s cubic-bezier(0.2, 0, 0.8, 1) infinite;
     --blob5: blob5 20s cubic-bezier(0.2, 0, 0.8, 1) infinite;
 }
-main {
-    display: flex;
-    height: 100vh;
-}
 
 button {
     display: inline-block;

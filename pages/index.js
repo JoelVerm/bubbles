@@ -9,7 +9,29 @@ flami(
             <style>
                 ${css}
             </style>
-            ${cursor()} ${editPane()} ${searchPane()}
+            <style>
+                main {
+                    overflow-x: auto;
+                }
+                main {
+                    scrollbar-color: var(--color-contrast) rgba(0, 0, 0, 0);
+                }
+                main::-webkit-scrollbar {
+                    background: rgba(0, 0, 0, 0);
+                }
+                main::-webkit-scrollbar-thumb {
+                    background: var(--color-contrast);
+                }
+                main::-webkit-scrollbar-track {
+                    background: rgba(0, 0, 0, 0);
+                }
+                .appBox {
+                    min-width: 900px;
+                    display: flex;
+                    height: 100vh;
+                }
+            </style>
+            <div class="appBox">${cursor()} ${editPane()} ${searchPane()}</div>
         </main>
     `
 )
