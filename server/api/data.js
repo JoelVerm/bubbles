@@ -33,8 +33,8 @@ export async function query(q) {
                 .create('notes', {
                     content: q.content,
                     tags: q.tags,
-                    time_created: new Date().toISOString(),
-                    time_updated: new Date().toISOString()
+                    time_created: q.time_created ?? new Date().toISOString(),
+                    time_updated: q.time_updated ?? new Date().toISOString()
                 })
                 .catch(console.error)
             break
