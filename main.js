@@ -229,7 +229,12 @@ async function handleReq(req, res) {
     let mimeType = getMIMEtype(path)
 
     try {
-        let response = await render(path, { searchParams, postData, cookies })
+        let response = await render(path, {
+            searchParams,
+            postData,
+            cookies,
+            ip
+        })
         if (!response) return
         if (response.redirect) {
             this.res.writeHead(302, {
