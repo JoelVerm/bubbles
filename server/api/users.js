@@ -1,7 +1,3 @@
-#!/usr/bin/env node
-
-import { fileURLToPath } from 'url'
-import process from 'process'
 import { db } from './db.js'
 import crypto from 'crypto'
 import { Buffer } from 'buffer'
@@ -18,7 +14,7 @@ const dbQuery = async (query, variables = undefined) =>
         }
     )
 
-async function hash(password) {
+export async function hash(password) {
     return new Promise((resolve, reject) => {
         const salt = crypto.randomBytes(32).toString('hex')
 
@@ -28,7 +24,7 @@ async function hash(password) {
         })
     })
 }
-async function verify(password, hash) {
+export async function verify(password, hash) {
     return new Promise((resolve, reject) => {
         const [salt, key] = hash.split(':')
         crypto.scrypt(password, salt, 64, (err, derivedKey) => {
@@ -39,7 +35,7 @@ async function verify(password, hash) {
     })
 }
 
-async function createAccount(data) {
+export async function createAccount(data) {
     const user = (
         await dbQuery('SELECT * FROM users WHERE name = $name', {
             name: data.name
@@ -62,12 +58,18 @@ async function createAccount(data) {
         }
     }
 }
-async function login(data, ip) {
+export async function login(data, ip) {
     const user = (
         await dbQuery('SELECT * FROM users WHERE name = $name', {
             name: data.name
         })
     )[0]
+    if (!user)
+        return {
+            content: {
+                loggedIn: false
+            }
+        }
     const passwordValid = await verify(data.password, user.password)
     if (!passwordValid)
         return {
@@ -96,15 +98,14 @@ async function login(data, ip) {
         ]
     }
 }
-async function checkLoggedin(data, ip, cookies) {
-    let sessions = await dbQuery(
-        'SELECT * FROM sessions WHERE ip = $ip, token = $token',
-        {
+export async function checkLoggedin(data, ip, cookies) {
+    let session = (
+        await dbQuery('SELECT * FROM sessions WHERE ip = $ip, token = $token', {
             ip,
             token: cookies.loginToken
-        }
-    )
-    if (!sessions)
+        })
+    )[0]
+    if (!session)
         return {
             content: {
                 loggedIn: false
@@ -131,15 +132,14 @@ async function checkLoggedin(data, ip, cookies) {
         ]
     }
 }
-async function logout(data, ip, cookies) {
-    let sessions = await dbQuery(
-        'SELECT * FROM sessions WHERE ip = $ip, token = $token',
-        {
+export async function logout(data, ip, cookies) {
+    let session = (
+        await dbQuery('SELECT * FROM sessions WHERE ip = $ip, token = $token', {
             ip,
             token: cookies.loginToken
-        }
-    )
-    if (!sessions)
+        })
+    )[0]
+    if (!session)
         return {
             content: {
                 loggedOut: false
@@ -154,29 +154,4 @@ async function logout(data, ip, cookies) {
             loggedOut: true
         }
     }
-}
-
-const functions = {
-    create: createAccount,
-    login,
-    check: checkLoggedin,
-    logout
-}
-async function main(data, ip) {
-    const func = functions[data.type]
-    return await func(data, ip)
-}
-
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-    const stdin = process.openStdin()
-
-    stdin.addListener('data', async function (inp) {
-        inp = JSON.parse(inp)
-        let result = {
-            content: JSON.stringify(
-                await main(inp.postData, inp.ip, inp.cookies)
-            )
-        }
-        console.log(JSON.stringify(result))
-    })
 }

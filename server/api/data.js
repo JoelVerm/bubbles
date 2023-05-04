@@ -102,7 +102,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     stdin.addListener('data', async function (inp) {
         let postData = JSON.parse(inp).postData
         let result = {
-            content: JSON.stringify(await query(postData))
+            content: await query(postData)
         }
         console.log(JSON.stringify(result))
     })
