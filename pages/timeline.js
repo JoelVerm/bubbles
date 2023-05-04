@@ -17,8 +17,6 @@ let days = timeline.reduce(function (r, e) {
     return r
 }, {})
 
-console.log(days)
-
 flami(
     () => html`
         <main>

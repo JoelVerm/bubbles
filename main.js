@@ -105,7 +105,6 @@ async function render(path, data) {
     let pagePath = pathModule.join(serverDirName, 'pages', path + '.js')
     if (!existsSync(pagePath)) return null
     let serverResponse = await handleServerProcesses(path, data)
-    console.log(serverResponse)
     let response = {}
     try {
         response = JSON.parse(serverResponse)

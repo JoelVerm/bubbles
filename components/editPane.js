@@ -21,8 +21,6 @@ const renderer = {
 
 marked.use({ renderer })
 
-console.log(marked)
-
 const createNoteData = () => ({
     type: 'add',
     id: null,
