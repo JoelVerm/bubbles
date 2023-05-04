@@ -239,6 +239,19 @@ export const page = () => html`
         </style>
         <div class="topBar">
             <button
+                class="button logoutButton"
+                onclick=${async () => {
+                    const logoutResult = await fetch('api/logout', {
+                        method: 'POST'
+                    }).then(r => r.json())
+                    if (logoutResult.loggedOut) location.pathname = '/login'
+                }}
+                tabindex="0"
+            >
+                <ion-icon name="log-out-outline"></ion-icon>
+            </button>
+            <div class="spacer"></div>
+            <button
                 class="button newButton"
                 onclick=${async () => {
                     data = createNoteData()
@@ -251,7 +264,7 @@ export const page = () => html`
                 <ion-icon name="document-outline"></ion-icon>
             </button>
             <button class="button saveButton" onclick=${save} tabindex="0">
-                <ion-icon name="checkmark-done-outline"></ion-icon>
+                <ion-icon name="save-outline"></ion-icon>
             </button>
             <button
                 class="button deleteButton"
@@ -269,7 +282,6 @@ export const page = () => html`
             >
                 <ion-icon name="trash-outline"></ion-icon>
             </button>
-            <div class="spacer"></div>
             <button
                 class=${`button autoTagButton ${
                     autoTagIsLoading ? 'loading' : ''

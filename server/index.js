@@ -1,9 +1,22 @@
 #!/usr/bin/env node
 
 import { query } from './api/data.js'
+import { checkLoggedin } from './api/users.js'
 import process from 'process'
 
 export async function getData(data) {
+    const loggedIn = await checkLoggedin(data.postData, data.ip, data.cookies)
+    if (!loggedIn)
+        return {
+            redirect: '/login'
+        }
+    const cookies = [
+        {
+            name: 'loginToken',
+            value: loggedIn,
+            path: '/'
+        }
+    ]
     let id = data?.searchParams?.id
     if (!id) {
         return {
@@ -11,7 +24,8 @@ export async function getData(data) {
                 startNote: await query({
                     type: 'random'
                 })
-            }
+            },
+            cookies
         }
     }
     let result = await query({
@@ -20,12 +34,14 @@ export async function getData(data) {
     })
     if (result.ERROR)
         return {
-            redirect: '/'
+            redirect: '/',
+            cookies
         }
     return {
         content: {
             startNote: result
-        }
+        },
+        cookies
     }
 }
 

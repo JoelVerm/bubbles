@@ -65,6 +65,7 @@ flami(
                         placeholder="Name"
                         class="button tag"
                         onkeyup=${e => (username = e.target.value)}
+                        oninput=${e => (username = e.target.value)}
                     />
                 </div>
                 <div>
@@ -76,6 +77,7 @@ flami(
                         placeholder="Password"
                         class="button tag"
                         onkeyup=${e => (password = e.target.value)}
+                        oninput=${e => (password = e.target.value)}
                     />
                 </div>
                 <div>
