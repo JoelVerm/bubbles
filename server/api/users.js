@@ -79,7 +79,7 @@ export async function login(data, ip) {
         }
     const token = crypto.randomBytes(64).toString('hex')
     await dbQuery(
-        'CREATE sessions SET user = $name, ip = $ip, token = $token',
+        'CREATE sessions SET user = $name, ip = $ip, token = $token, time = time::now()',
         {
             name: data.name,
             ip,
@@ -113,7 +113,7 @@ export async function checkLoggedin(data, ip, cookies) {
         }
     const token = crypto.randomBytes(64).toString('hex')
     await dbQuery(
-        'UPDATE sessions SET token = $newToken WHERE ip = $ip, token = $token',
+        'UPDATE sessions SET token = $newToken, time = time::now() WHERE ip = $ip, token = $token',
         {
             ip,
             token: cookies.loginToken,
