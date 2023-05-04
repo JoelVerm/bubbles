@@ -66,6 +66,9 @@ async function handleServerProcesses(path, data) {
                 ['']
             )
             runningServerProcesses[path] = serverProgram
+            serverProgram.stderr.on('data', data =>
+                console.error(data.toString())
+            )
             serverProgram.once(
                 'close',
                 () => delete runningServerProcesses[path]
