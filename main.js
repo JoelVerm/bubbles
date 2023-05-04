@@ -243,10 +243,10 @@ async function handleReq(req, res) {
         })
         if (!response) return
         if (response.redirect) {
-            this.res.writeHead(302, {
+            res.writeHead(302, {
                 Location: response.redirect
             })
-            this.res.end()
+            res.end()
             return
         }
         if (response.cookies) {
