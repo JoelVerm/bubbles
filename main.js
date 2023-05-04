@@ -105,14 +105,18 @@ async function render(path, data) {
     let pagePath = pathModule.join(serverDirName, 'pages', path + '.js')
     if (!existsSync(pagePath)) return null
     let serverResponse = await handleServerProcesses(path, data)
+    console.log(serverResponse)
     let response = {}
     try {
         response = JSON.parse(serverResponse)
     } catch {
         response.content = serverResponse
     }
-    if (!path.includes('api') && response.content != null)
-        response.content = renderHtml(path, response.content)
+    if (response.content != null) {
+        if (!path.includes('api') && response.content != null)
+            response.content = renderHtml(path, response.content)
+        else response.content = JSON.stringify(response.content)
+    }
     return response
 }
 
@@ -247,8 +251,10 @@ async function handleReq(req, res) {
             return
         }
         if (response.cookies) {
-            response.cookies.forEach(cookie =>
-                res.setHeader('Set-Cookie', createCookie(cookie))
+            await Promise.all(
+                response.cookies.map(async cookie =>
+                    res.setHeader('Set-Cookie', await createCookie(cookie))
+                )
             )
         }
         res.writeHead(200, {
