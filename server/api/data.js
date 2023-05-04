@@ -3,6 +3,7 @@
 import { fileURLToPath } from 'url'
 import process from 'process'
 import { db } from './db.js'
+import { checkLoggedin } from './users.js'
 
 /**
  * @param {String} query
@@ -22,10 +23,13 @@ const dbQuery = async (query, variables = undefined) =>
  *      type: 'add' | 'update' | 'get' | 'delete'| 'random' | 'query' | 'timeline',
  *      content?:String,
  *      tags?:Array<string>,
- *      id?:String
+ *      id?:String,
+ *      username?:String,
+ *      public?:Boolean
  * }} q
  */
 export async function query(q) {
+    console.error('query:', q)
     let note
     switch (q.type) {
         case 'add':
@@ -34,7 +38,9 @@ export async function query(q) {
                     content: q.content,
                     tags: q.tags,
                     time_created: q.time_created ?? new Date().toISOString(),
-                    time_updated: q.time_updated ?? new Date().toISOString()
+                    time_updated: q.time_updated ?? new Date().toISOString(),
+                    writer: q.username,
+                    public: q.public ?? false
                 })
                 .catch(console.error)
             break
@@ -45,25 +51,34 @@ export async function query(q) {
                     ...q,
                     type: 'add'
                 })
-            if (q.content) note.content = q.content
-            if (q.tags) note.tags = q.tags
+            note.content ??= q.content
+            note.tags ??= q.tags
+            note.public ??= q.public
             note.time_updated = new Date().toISOString()
             await db.update(`notes:${q.id}`, note).catch(console.error)
             break
         case 'get':
             note = (await db.select(`notes:${q.id}`).catch(console.error))?.[0]
-            if (!note)
+            if (!note || !(note.writer === q.username || note.public))
                 return {
                     ERROR: `Unable to retrieve note with id ${q.id}`
                 }
             break
         case 'delete':
+            note = (await db.select(`notes:${q.id}`).catch(console.error))?.[0]
+            if (!note || !(note.writer === q.username || note.public))
+                return {
+                    ERROR: `Unable to delete note with id ${q.id}`
+                }
             await db.delete(`notes:${q.id}`).catch(console.error)
             return { SUCCESS: `Deleted node with id ${q.id}` }
         case 'random':
             return (
                 (
-                    await dbQuery('SELECT * FROM notes ORDER BY RAND() LIMIT 1')
+                    await dbQuery(
+                        'SELECT * FROM notes WHERE writer = $name ORDER BY RAND() LIMIT 1',
+                        { name: q.username }
+                    )
                 )?.[0] ?? { ERROR: 'Unable to retrieve random note' }
             )
         case 'query':
@@ -73,20 +88,24 @@ export async function query(q) {
                         .map((t, i) => `tags ?~ $t${i}`)
                         .join(
                             ', '
-                        )}]) AS matches FROM notes ORDER BY RAND()) WHERE matches >= $minTagCount AND content ~ $content ORDER BY matches DESC LIMIT 50`,
+                        )}]) AS matches FROM notes ORDER BY RAND()) WHERE matches >= $minTagCount AND content ~ $content AND writer = $name ${
+                        q.public ? 'OR public = true' : ''
+                    } ORDER BY matches DESC LIMIT 50`,
                     {
                         ...Object.fromEntries(
                             q.tags.map((t, i) => [`t${i}`, t])
                         ),
                         minTagCount: Math.round(q.tags.length / 2),
-                        content: q.content
+                        content: q.content,
+                        name: q.username
                     }
                 )) ?? { ERROR: 'Unable to find matching search results' }
             )
         case 'timeline':
             return (
                 (await dbQuery(
-                    'SELECT string::slice(content, 0, 50) as firstWords, time_created, id FROM notes ORDER BY time_created DESC'
+                    'SELECT string::slice(content, 0, 50) as firstWords, time_created, id FROM notes WHERE writer = $name ORDER BY time_created DESC',
+                    { name: q.username }
                 )) ?? { ERROR: 'Unable to get the timeline' }
             )
     }
@@ -100,9 +119,20 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     const stdin = process.openStdin()
 
     stdin.addListener('data', async function (inp) {
-        let postData = JSON.parse(inp).postData
+        inp = JSON.parse(inp)
+        const loggedIn = await checkLoggedin(inp.postData, inp.ip, inp.cookies)
+        if (!loggedIn) return {}
+        const [cookieToken, username] = loggedIn
+        const note = await query({ ...inp.postData, username })
         let result = {
-            content: await query(postData)
+            content: note,
+            cookies: [
+                {
+                    name: 'loginToken',
+                    value: cookieToken,
+                    path: '/'
+                }
+            ]
         }
         console.log(JSON.stringify(result))
     })

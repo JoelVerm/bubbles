@@ -10,10 +10,11 @@ export async function getData(data) {
         return {
             redirect: '/login'
         }
+    const [cookieToken, username] = loggedIn
     const cookies = [
         {
             name: 'loginToken',
-            value: loggedIn,
+            value: cookieToken,
             path: '/'
         }
     ]
@@ -22,7 +23,8 @@ export async function getData(data) {
         return {
             content: {
                 startNote: await query({
-                    type: 'random'
+                    type: 'random',
+                    username
                 })
             },
             cookies
@@ -30,7 +32,8 @@ export async function getData(data) {
     }
     let result = await query({
         type: 'get',
-        id: id
+        id: id,
+        username
     })
     if (result.ERROR)
         return {

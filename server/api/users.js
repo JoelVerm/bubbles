@@ -120,7 +120,7 @@ export async function checkLoggedin(data, ip, cookies) {
             newToken: token
         }
     )
-    return token
+    return [token, session.user]
 }
 export async function logout(data, ip, cookies) {
     if (!cookies.loginToken)

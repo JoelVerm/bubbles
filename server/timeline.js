@@ -10,15 +10,17 @@ export async function getData(data) {
         return {
             redirect: '/login'
         }
+    const [cookieToken, username] = loggedIn
     const cookies = [
         {
             name: 'loginToken',
-            value: loggedIn,
+            value: cookieToken,
             path: '/'
         }
     ]
     let result = await query({
-        type: 'timeline'
+        type: 'timeline',
+        username
     })
     if (result.ERROR)
         return {
