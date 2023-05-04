@@ -191,7 +191,7 @@ function getCookies(req) {
     )
 }
 
-const createCookie = async ({
+const createCookie = ({
     name,
     value,
     expires = null,
@@ -250,11 +250,9 @@ async function handleReq(req, res) {
             return
         }
         if (response.cookies) {
-            await Promise.all(
-                response.cookies.map(async cookie =>
-                    res.setHeader('Set-Cookie', await createCookie(cookie))
-                )
-            )
+            for (const cookie of response.cookies) {
+                res.setHeader('Set-Cookie', createCookie(cookie))
+            }
         }
         res.writeHead(200, {
             'Content-Type': mimeType + '; charset=utf-8',
