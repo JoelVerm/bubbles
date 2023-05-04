@@ -108,7 +108,7 @@ async function render(path, data) {
     } catch {
         response.content = serverResponse
     }
-    if (!path.includes('api') && response.content)
+    if (!path.includes('api') && response.content != null)
         response.content = renderHtml(path, response.content)
     return response
 }
