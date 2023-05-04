@@ -51,9 +51,9 @@ export async function query(q) {
                     ...q,
                     type: 'add'
                 })
-            note.content ??= q.content
-            note.tags ??= q.tags
-            note.public ??= q.public
+            if (q.content != null) note.content = q.content
+            if (q.tags != null) note.tags = q.tags
+            if (q.public != null) note.public = q.public
             note.time_updated = new Date().toISOString()
             await db.update(`notes:${q.id}`, note).catch(console.error)
             break

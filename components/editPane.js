@@ -25,7 +25,8 @@ const createNoteData = () => ({
     type: 'add',
     id: null,
     content: '',
-    tags: []
+    tags: [],
+    public: false
 })
 let data
 /* global SERVER */
@@ -34,7 +35,8 @@ if (SERVER.startNote && !SERVER.startNote.ERROR)
         type: 'update',
         id: SERVER.startNote.id,
         content: SERVER.startNote.content,
-        tags: SERVER.startNote.tags
+        tags: SERVER.startNote.tags,
+        public: SERVER.startNote.public
     }
 else data = createNoteData()
 function insertUrlParam(key, value) {
@@ -52,11 +54,13 @@ function insertUrlParam(key, value) {
     }
 }
 export const loadNote = note => {
+    console.log('load:', note)
     data = {
         type: 'update',
         id: note.id,
         content: note.content,
-        tags: note.tags
+        tags: note.tags,
+        public: note.public
     }
     insertUrlParam('id', note.id)
     document.querySelector('.editPane .editor .edit').value = data.content
@@ -86,6 +90,7 @@ const save = async () => {
         data = createNoteData()
         document.querySelector('.editPane .editor .edit').value = data.content
     } else {
+        console.log('save:', data)
         let r = await request(data).then(r => r.json())
         data.id = r.id
         data.type = 'update'
@@ -247,9 +252,18 @@ export const page = () => html`
                     if (logoutResult.loggedOut) location.pathname = '/login'
                 }}
                 tabindex="0"
+                title="log out"
             >
                 <ion-icon name="log-out-outline"></ion-icon>
             </button>
+            <a
+                class="button timelineButton"
+                href="timeline"
+                tabindex="0"
+                title="view note timeline"
+            >
+                <ion-icon name="time-outline"></ion-icon>
+            </a>
             <div class="spacer"></div>
             <button
                 class="button newButton"
@@ -260,10 +274,16 @@ export const page = () => html`
                     update()
                 }}
                 tabindex="0"
+                title="new note"
             >
                 <ion-icon name="document-outline"></ion-icon>
             </button>
-            <button class="button saveButton" onclick=${save} tabindex="0">
+            <button
+                class="button saveButton"
+                onclick=${save}
+                tabindex="0"
+                title="save note"
+            >
                 <ion-icon name="save-outline"></ion-icon>
             </button>
             <button
@@ -279,8 +299,22 @@ export const page = () => html`
                     search()
                 }}
                 tabindex="0"
+                title="delete note"
             >
                 <ion-icon name="trash-outline"></ion-icon>
+            </button>
+            <button
+                class="button publishButton"
+                onclick=${async () => {
+                    data.public = !data.public
+                    save()
+                }}
+                tabindex="0"
+                title=${data.public ? 'make note private' : 'publish note'}
+            >
+                <ion-icon
+                    name=${`lock-${data.public ? 'open' : 'closed'}-outline`}
+                ></ion-icon>
             </button>
             <button
                 class=${`button autoTagButton ${
@@ -308,6 +342,7 @@ export const page = () => html`
                     save()
                 }}
                 tabindex="0"
+                title="auto tag note"
             >
                 <ion-icon name="pricetags-outline"></ion-icon>
             </button>
@@ -318,6 +353,7 @@ export const page = () => html`
                     search()
                 }}
                 tabindex="0"
+                title="search this note's tags"
             >
                 <ion-icon name="search-outline"></ion-icon>
             </button>

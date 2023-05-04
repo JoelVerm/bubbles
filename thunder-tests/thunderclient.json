@@ -8,7 +8,7 @@
     "method": "POST",
     "sortNum": 10000,
     "created": "2023-05-01T13:06:33.888Z",
-    "modified": "2023-05-04T17:50:20.644Z",
+    "modified": "2023-05-04T19:23:29.919Z",
     "headers": [
       {
         "name": "Accept",
@@ -26,7 +26,7 @@
     "params": [],
     "body": {
       "type": "text",
-      "raw": "SELECT * FROM sessions",
+      "raw": "SELECT * FROM notes",
       "form": []
     },
     "auth": {
