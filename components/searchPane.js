@@ -3,6 +3,7 @@ import { page as noteWidget } from './noteWidget.js'
 
 let searchTerm = ''
 let searchTags = []
+let searchPublic = false
 
 let notesList = []
 
@@ -41,7 +42,8 @@ export const search = async () => {
     let r = await request({
         type: 'query',
         tags: searchTags,
-        content: searchTerm
+        content: searchTerm,
+        public: searchPublic
     }).then(r => r.json())
     if (r.ERROR) return
     notesList = r
@@ -58,7 +60,7 @@ export const page = () => html`
                 flex-direction: column;
             }
             .searchPane .searchBar {
-                width: calc(100% - 14px);
+                width: 100%;
                 margin: 7px;
                 padding: 0.5rem;
                 background-color: var(--color-bg-2);
@@ -67,6 +69,9 @@ export const page = () => html`
                 border-radius: 1000vmax;
                 color: var(--color-contrast-dim);
                 z-index: 20;
+            }
+            .searchPane .button.publicButton {
+                z-index: 5;
             }
             .searchPane > .tags .tag {
                 position: relative;
@@ -121,6 +126,21 @@ export const page = () => html`
                     search()
                 }}
             />
+            <button
+                class="button publicButton"
+                onclick=${async () => {
+                    searchPublic = !searchPublic
+                    search()
+                }}
+                tabindex="0"
+                title=${searchPublic
+                    ? 'search private notes'
+                    : 'also search public notes'}
+            >
+                <ion-icon
+                    name=${`person${searchPublic ? '' : '-outline'}`}
+                ></ion-icon>
+            </button>
         </div>
         <div class="tags">
             <span

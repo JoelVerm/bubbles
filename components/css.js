@@ -84,6 +84,10 @@ button {
     cursor: pointer;
 }
 
+ion-icon {
+    pointer-events: none;
+}
+
 * {
     scrollbar-color: var(--color-bg-2) rgba(0, 0, 0, 0);
 }
