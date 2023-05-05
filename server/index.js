@@ -25,7 +25,8 @@ export async function getData(data) {
                 startNote: await query({
                     type: 'random',
                     username
-                })
+                }),
+                username
             },
             cookies
         }
@@ -42,7 +43,8 @@ export async function getData(data) {
         }
     return {
         content: {
-            startNote: result
+            startNote: result,
+            username
         },
         cookies
     }

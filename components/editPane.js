@@ -26,7 +26,8 @@ const createNoteData = () => ({
     id: null,
     content: '',
     tags: [],
-    public: false
+    public: false,
+    writer: SERVER.username
 })
 let data
 /* global SERVER */
@@ -36,7 +37,8 @@ if (SERVER.startNote && !SERVER.startNote.ERROR)
         id: SERVER.startNote.id,
         content: SERVER.startNote.content,
         tags: SERVER.startNote.tags,
-        public: SERVER.startNote.public
+        public: SERVER.startNote.public,
+        writer: SERVER.startNote.writer
     }
 else data = createNoteData()
 function insertUrlParam(key, value) {
@@ -60,7 +62,8 @@ export const loadNote = note => {
         id: note.id,
         content: note.content,
         tags: note.tags,
-        public: note.public
+        public: note.public,
+        writer: note.writer
     }
     insertUrlParam('id', note.id)
     document.querySelector('.editPane .editor .edit').value = data.content
@@ -108,6 +111,9 @@ export const page = () => html`
                 overflow: hidden;
             }
 
+            .editPane .topBar .writerBox {
+                margin: auto 0px;
+            }
             .editPane .topBar .button:nth-of-type(5n + 1) {
                 animation: var(--blob1);
             }
@@ -264,6 +270,10 @@ export const page = () => html`
             >
                 <ion-icon name="time-outline"></ion-icon>
             </a>
+            <div class="spacer"></div>
+            <div class="writerBox">
+                ${data.writer === SERVER.username ? '' : `By: ${data.writer}`}
+            </div>
             <div class="spacer"></div>
             <button
                 class="button newButton"
