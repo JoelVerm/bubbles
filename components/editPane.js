@@ -255,7 +255,7 @@ export const page = () => html`
                     const logoutResult = await fetch('api/logout', {
                         method: 'POST'
                     }).then(r => r.json())
-                    if (logoutResult.loggedOut) location.pathname = '/login'
+                    if (logoutResult.loggedOut) location.href = '/login'
                 }}
                 tabindex="0"
                 title="log out"

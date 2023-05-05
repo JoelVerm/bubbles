@@ -16,7 +16,7 @@ const tryLogin = async () => {
         })
     }).then(r => r.json())
     loginSuccess = loginResult.loggedIn
-    if (loginSuccess) location.pathname = '/'
+    if (loginSuccess) location.href = '/'
     else update()
 }
 
