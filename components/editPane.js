@@ -66,7 +66,7 @@ export const loadNote = note => {
         writer: note.writer
     }
     insertUrlParam('id', note.id)
-    document.querySelector('.editPane .editor .edit').value = data.content
+    document.querySelector('.editPane .editor .edit').innerText = data.content
     update()
 }
 
@@ -91,7 +91,8 @@ const save = async () => {
             id: data.id
         })
         data = createNoteData()
-        document.querySelector('.editPane .editor .edit').value = data.content
+        document.querySelector('.editPane .editor .edit').innerText =
+            data.content
     } else {
         console.log('save:', data)
         let r = await request(data).then(r => r.json())
@@ -102,6 +103,25 @@ const save = async () => {
 }
 
 let autoTagIsLoading = false
+
+const textarea = html`<!-- prettier-ignore -->
+    <div
+    class="edit"
+    contenteditable
+    placeholder="Create a note..."
+    onkeyup=${e => {
+        if (e.ctrlKey && e.key === 's') {
+            e.cancelBubble = true
+            e.preventDefault()
+            e.stopPropagation()
+            save()
+            return false
+        }
+        data.content = e.target.innerText
+        update()
+    }}
+    onfocusout=${save}
+>${data.content}</div>`
 
 export const page = goToSearchPane => html`
     <section class="editPane">
@@ -156,11 +176,13 @@ export const page = goToSearchPane => html`
             }
             .editPane .editorScroll {
                 display: flex;
+                min-height: 100%;
             }
             .editPane .editor .edit {
                 white-space: pre-wrap;
                 flex: 1;
                 min-width: max(50%, 300px);
+                min-height: 100%;
                 padding: 10px;
                 outline: none;
                 border: none;
@@ -298,7 +320,7 @@ export const page = goToSearchPane => html`
                         data = createNoteData()
                         document.querySelector(
                             '.editPane .editor .edit'
-                        ).value = data.content
+                        ).innerText = data.content
                         update()
                     }}
                     tabindex="0"
@@ -325,7 +347,7 @@ export const page = goToSearchPane => html`
                                   data = createNoteData()
                                   document.querySelector(
                                       '.editPane .editor .edit'
-                                  ).value = data.content
+                                  ).innerText = data.content
                                   search()
                               }}
                               tabindex="0"
@@ -399,28 +421,7 @@ export const page = goToSearchPane => html`
         </div>
         <div class="editor">
             <div class="editorScroll">
-                ${data.writer === SERVER.username
-                    ? html`<textarea
-                          class="edit"
-                          contenteditable
-                          placeholder="Create a note..."
-                          onkeyup=${e => {
-                              if (e.ctrlKey && e.key === 's') {
-                                  e.cancelBubble = true
-                                  e.preventDefault()
-                                  e.stopPropagation()
-                                  save()
-                                  return false
-                              }
-                              data.content = e.target.value
-                              update()
-                          }}
-                          onfocusout=${save}
-                      >
-                    ${data.content}
-                </textarea
-                      >`
-                    : ''}
+                ${data.writer === SERVER.username ? textarea : ''}
                 <div class="markdown">
                     ${html([marked.parse(data.content)])}
                 </div>
