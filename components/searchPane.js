@@ -52,13 +52,22 @@ export const search = async () => {
 
 search()
 
-export const page = () => html`
+export const page = goToEditPane => html`
     <section class="searchPane">
         <style>
             .searchPane {
                 display: flex;
                 flex-direction: column;
                 overflow: hidden;
+            }
+            .searchPane .button.backToEditButton {
+                z-index: 5;
+                display: none;
+            }
+            @media (max-width: 800px) {
+                .searchPane .button.backToEditButton {
+                    display: initial;
+                }
             }
             .searchPane .searchBar {
                 width: 100%;
@@ -118,6 +127,14 @@ export const page = () => html`
             }
         </style>
         <div class="topBar">
+            <button
+                class="button backToEditButton"
+                onclick=${goToEditPane}
+                tabindex="0"
+                title="Back to editor"
+            >
+                <ion-icon name="arrow-back-outline"></ion-icon>
+            </button>
             <input
                 type="text"
                 class="searchBar button"
@@ -129,7 +146,7 @@ export const page = () => html`
             />
             <button
                 class="button publicButton"
-                onclick=${async () => {
+                onclick=${() => {
                     searchPublic = !searchPublic
                     search()
                 }}

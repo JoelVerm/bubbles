@@ -103,7 +103,7 @@ const save = async () => {
 
 let autoTagIsLoading = false
 
-export const page = () => html`
+export const page = goToSearchPane => html`
     <section class="editPane">
         <style>
             .editPane {
@@ -155,7 +155,7 @@ export const page = () => html`
             }
             .editPane .editor .edit {
                 white-space: pre-wrap;
-                flex: 0 0 50%;
+                flex: 1;
                 padding: 10px;
                 outline: none;
                 border: none;
@@ -163,14 +163,8 @@ export const page = () => html`
                 background-color: rgba(0, 0, 0, 0);
             }
             .editPane .editor .markdown {
-                flex: 0 0 50%;
+                flex: 1;
                 padding: 10px;
-            }
-            @media (max-width: 500px) {
-                .editPane .editor .edit,
-                .editPane .editor .markdown {
-                    min-width: 100vw;
-                }
             }
             h1,
             h2,
@@ -375,6 +369,7 @@ export const page = () => html`
             <button
                 class="button searchTagsButton"
                 onclick=${() => {
+                    goToSearchPane()
                     setSearchTags([...data.tags])
                     search()
                 }}
@@ -386,26 +381,28 @@ export const page = () => html`
         </div>
         <div class="editor">
             <div class="editorScroll">
-                <textarea
-                    class="edit"
-                    contenteditable
-                    placeholder="Create a note..."
-                    onkeyup=${e => {
-                        if (e.ctrlKey && e.key === 's') {
-                            e.cancelBubble = true
-                            e.preventDefault()
-                            e.stopPropagation()
-                            save()
-                            return false
-                        }
-                        data.content = e.target.value
-                        update()
-                    }}
-                    onfocusout=${save}
-                >
+                ${data.writer === SERVER.username
+                    ? html`<textarea
+                          class="edit"
+                          contenteditable
+                          placeholder="Create a note..."
+                          onkeyup=${e => {
+                              if (e.ctrlKey && e.key === 's') {
+                                  e.cancelBubble = true
+                                  e.preventDefault()
+                                  e.stopPropagation()
+                                  save()
+                                  return false
+                              }
+                              data.content = e.target.value
+                              update()
+                          }}
+                          onfocusout=${save}
+                      >
                     ${data.content}
                 </textarea
-                >
+                      >`
+                    : ''}
                 <div class="markdown">
                     ${html([marked.parse(data.content)])}
                 </div>
