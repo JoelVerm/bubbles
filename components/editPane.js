@@ -109,10 +109,14 @@ export const page = goToSearchPane => html`
             .editPane {
                 position: relative;
                 overflow: hidden;
+                display: flex;
+                flex-direction: column;
             }
 
-            .editPane .topBar {
-                overflow-x: auto;
+            .editPane .topBar.outer {
+                height: initial;
+                flex: 0 1 auto;
+                flex-wrap: wrap;
             }
             .editPane .topBar .writerBox {
                 margin: auto 0px;
@@ -147,7 +151,7 @@ export const page = goToSearchPane => html`
             }
 
             .editPane .editor {
-                height: calc(75% - 50px);
+                flex: 1 1 auto;
                 overflow-y: auto;
             }
             .editPane .editorScroll {
@@ -156,6 +160,7 @@ export const page = goToSearchPane => html`
             .editPane .editor .edit {
                 white-space: pre-wrap;
                 flex: 1;
+                min-width: max(50%, 300px);
                 padding: 10px;
                 outline: none;
                 border: none;
@@ -164,6 +169,7 @@ export const page = goToSearchPane => html`
             }
             .editPane .editor .markdown {
                 flex: 1;
+                min-width: max(50%, 300px);
                 padding: 10px;
             }
             h1,
@@ -225,9 +231,14 @@ export const page = goToSearchPane => html`
             }
 
             .editPane .tags {
-                height: 25%;
+                flex: 0 1 25%;
                 background-color: var(--color-bg-2);
                 border-radius: 0px 15px 0px 0px;
+            }
+            @media (max-width: 800px) {
+                .editPane .tags {
+                    border-radius: 0px;
+                }
             }
             .editPane .tag {
                 position: relative;
@@ -251,133 +262,140 @@ export const page = goToSearchPane => html`
                 color: var(--color-contrast-dim);
             }
         </style>
-        <div class="topBar">
-            <button
-                class="button logoutButton"
-                onclick=${async () => {
-                    const logoutResult = await fetch('api/logout', {
-                        method: 'POST'
-                    }).then(r => r.json())
-                    if (logoutResult.loggedOut) location.href = '/login'
-                }}
-                tabindex="0"
-                title="log out"
-            >
-                <ion-icon name="log-out-outline"></ion-icon>
-            </button>
-            <a
-                class="button timelineButton"
-                href="timeline"
-                tabindex="0"
-                title="view note timeline"
-            >
-                <ion-icon name="time-outline"></ion-icon>
-            </a>
+        <div class="topBar outer">
+            <div class="topBar inner">
+                <button
+                    class="button logoutButton"
+                    onclick=${async () => {
+                        const logoutResult = await fetch('api/logout', {
+                            method: 'POST'
+                        }).then(r => r.json())
+                        if (logoutResult.loggedOut) location.href = '/login'
+                    }}
+                    tabindex="0"
+                    title="log out"
+                >
+                    <ion-icon name="log-out-outline"></ion-icon>
+                </button>
+                <a
+                    class="button timelineButton"
+                    href="timeline"
+                    tabindex="0"
+                    title="view note timeline"
+                >
+                    <ion-icon name="time-outline"></ion-icon>
+                </a>
+            </div>
             <div class="spacer"></div>
             <div class="writerBox">
                 ${data.writer === SERVER.username ? '' : `By: ${data.writer}`}
             </div>
             <div class="spacer"></div>
-            <button
-                class="button newButton"
-                onclick=${async () => {
-                    data = createNoteData()
-                    document.querySelector('.editPane .editor .edit').value =
-                        data.content
-                    update()
-                }}
-                tabindex="0"
-                title="new note"
-            >
-                <ion-icon name="document-outline"></ion-icon>
-            </button>
-            ${data.writer === SERVER.username
-                ? html`<button
-                          class="button saveButton"
-                          onclick=${save}
-                          tabindex="0"
-                          title="save note"
-                      >
-                          <ion-icon name="save-outline"></ion-icon>
-                      </button>
-                      <button
-                          class="button deleteButton"
-                          onclick=${async () => {
-                              await request({
-                                  type: 'delete',
-                                  id: data.id
-                              })
-                              data = createNoteData()
-                              document.querySelector(
-                                  '.editPane .editor .edit'
-                              ).value = data.content
-                              search()
-                          }}
-                          tabindex="0"
-                          title="delete note"
-                      >
-                          <ion-icon name="trash-outline"></ion-icon>
-                      </button>
-                      <button
-                          class="button publishButton"
-                          onclick=${async () => {
-                              data.public = !data.public
-                              save()
-                          }}
-                          tabindex="0"
-                          title=${data.public
-                              ? 'make note private'
-                              : 'publish note'}
-                      >
-                          <ion-icon
-                              name=${`lock-${
-                                  data.public ? 'open' : 'closed'
-                              }-outline`}
-                          ></ion-icon>
-                      </button>
-                      <button
-                          class=${`button autoTagButton ${
-                              autoTagIsLoading ? 'loading' : ''
-                          }`}
-                          onclick=${async () => {
-                              if (autoTagIsLoading) return
-                              autoTagIsLoading = true
-                              update()
-                              let tagString = await fetch('api/keywords', {
-                                  method: 'POST',
-                                  mode: 'cors',
-                                  cache: 'no-cache',
-                                  credentials: 'same-origin',
-                                  headers: {
-                                      'Content-Type': 'application/json'
-                                  },
-                                  redirect: 'follow',
-                                  body: JSON.stringify({
-                                      text: data.content
+            <div class="topBar inner">
+                <button
+                    class="button newButton"
+                    onclick=${async () => {
+                        data = createNoteData()
+                        document.querySelector(
+                            '.editPane .editor .edit'
+                        ).value = data.content
+                        update()
+                    }}
+                    tabindex="0"
+                    title="new note"
+                >
+                    <ion-icon name="document-outline"></ion-icon>
+                </button>
+                ${data.writer === SERVER.username
+                    ? html`<button
+                              class="button saveButton"
+                              onclick=${save}
+                              tabindex="0"
+                              title="save note"
+                          >
+                              <ion-icon name="save-outline"></ion-icon>
+                          </button>
+                          <button
+                              class="button deleteButton"
+                              onclick=${async () => {
+                                  await request({
+                                      type: 'delete',
+                                      id: data.id
                                   })
-                              }).then(r => r.text())
-                              data.tags = data.tags.concat(tagString.split(','))
-                              autoTagIsLoading = false
-                              save()
-                          }}
-                          tabindex="0"
-                          title="auto tag note"
-                      >
-                          <ion-icon name="pricetags-outline"></ion-icon>
-                      </button>`
-                : ''}
-            <button
-                class="button searchTagsButton"
-                onclick=${() => {
-                    goToSearchPane()
-                    setSearchTags([...data.tags])
-                    search()
-                }}
-                tabindex="0"
-                title="search this note's tags"
-            >
-                <ion-icon name="search-outline"></ion-icon>
-            </button>
+                                  data = createNoteData()
+                                  document.querySelector(
+                                      '.editPane .editor .edit'
+                                  ).value = data.content
+                                  search()
+                              }}
+                              tabindex="0"
+                              title="delete note"
+                          >
+                              <ion-icon name="trash-outline"></ion-icon>
+                          </button>
+                          <button
+                              class="button publishButton"
+                              onclick=${async () => {
+                                  data.public = !data.public
+                                  save()
+                              }}
+                              tabindex="0"
+                              title=${data.public
+                                  ? 'make note private'
+                                  : 'publish note'}
+                          >
+                              <ion-icon
+                                  name=${`lock-${
+                                      data.public ? 'open' : 'closed'
+                                  }-outline`}
+                              ></ion-icon>
+                          </button>
+                          <button
+                              class=${`button autoTagButton ${
+                                  autoTagIsLoading ? 'loading' : ''
+                              }`}
+                              onclick=${async () => {
+                                  if (autoTagIsLoading) return
+                                  autoTagIsLoading = true
+                                  update()
+                                  let tagString = await fetch('api/keywords', {
+                                      method: 'POST',
+                                      mode: 'cors',
+                                      cache: 'no-cache',
+                                      credentials: 'same-origin',
+                                      headers: {
+                                          'Content-Type': 'application/json'
+                                      },
+                                      redirect: 'follow',
+                                      body: JSON.stringify({
+                                          text: data.content
+                                      })
+                                  }).then(r => r.text())
+                                  data.tags = data.tags.concat(
+                                      tagString.split(',')
+                                  )
+                                  autoTagIsLoading = false
+                                  save()
+                              }}
+                              tabindex="0"
+                              title="auto tag note"
+                          >
+                              <ion-icon name="pricetags-outline"></ion-icon>
+                          </button>`
+                    : ''}
+                <button
+                    class="button searchTagsButton"
+                    onclick=${() => {
+                        goToSearchPane()
+                        setSearchTags([...data.tags])
+                        search()
+                    }}
+                    tabindex="0"
+                    title="search this note's tags"
+                >
+                    <ion-icon name="search-outline"></ion-icon>
+                </button>
+            </div>
         </div>
         <div class="editor">
             <div class="editorScroll">

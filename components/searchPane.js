@@ -196,7 +196,15 @@ export const page = goToEditPane => html`
         </div>
         <div class="results" tabindex="0">
             ${notesList.map(e =>
-                noteWidget(e, () => loadNote(e), searchableTag, searchTags)
+                noteWidget(
+                    e,
+                    () => {
+                        loadNote(e)
+                        goToEditPane()
+                    },
+                    searchableTag,
+                    searchTags
+                )
             )}
         </div>
     </section>
