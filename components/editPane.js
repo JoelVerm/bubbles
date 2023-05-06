@@ -297,74 +297,81 @@ export const page = () => html`
             >
                 <ion-icon name="document-outline"></ion-icon>
             </button>
-            <button
-                class="button saveButton"
-                onclick=${save}
-                tabindex="0"
-                title="save note"
-            >
-                <ion-icon name="save-outline"></ion-icon>
-            </button>
-            <button
-                class="button deleteButton"
-                onclick=${async () => {
-                    await request({
-                        type: 'delete',
-                        id: data.id
-                    })
-                    data = createNoteData()
-                    document.querySelector('.editPane .editor .edit').value =
-                        data.content
-                    search()
-                }}
-                tabindex="0"
-                title="delete note"
-            >
-                <ion-icon name="trash-outline"></ion-icon>
-            </button>
-            <button
-                class="button publishButton"
-                onclick=${async () => {
-                    data.public = !data.public
-                    save()
-                }}
-                tabindex="0"
-                title=${data.public ? 'make note private' : 'publish note'}
-            >
-                <ion-icon
-                    name=${`lock-${data.public ? 'open' : 'closed'}-outline`}
-                ></ion-icon>
-            </button>
-            <button
-                class=${`button autoTagButton ${
-                    autoTagIsLoading ? 'loading' : ''
-                }`}
-                onclick=${async () => {
-                    if (autoTagIsLoading) return
-                    autoTagIsLoading = true
-                    update()
-                    let tagString = await fetch('api/keywords', {
-                        method: 'POST',
-                        mode: 'cors',
-                        cache: 'no-cache',
-                        credentials: 'same-origin',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        redirect: 'follow',
-                        body: JSON.stringify({
-                            text: data.content
-                        })
-                    }).then(r => r.text())
-                    data.tags = data.tags.concat(tagString.split(','))
-                    autoTagIsLoading = false
-                    save()
-                }}
-                tabindex="0"
-                title="auto tag note"
-            >
-                <ion-icon name="pricetags-outline"></ion-icon>
-            </button>
+            ${data.writer === SERVER.username
+                ? html`<button
+                          class="button saveButton"
+                          onclick=${save}
+                          tabindex="0"
+                          title="save note"
+                      >
+                          <ion-icon name="save-outline"></ion-icon>
+                      </button>
+                      <button
+                          class="button deleteButton"
+                          onclick=${async () => {
+                              await request({
+                                  type: 'delete',
+                                  id: data.id
+                              })
+                              data = createNoteData()
+                              document.querySelector(
+                                  '.editPane .editor .edit'
+                              ).value = data.content
+                              search()
+                          }}
+                          tabindex="0"
+                          title="delete note"
+                      >
+                          <ion-icon name="trash-outline"></ion-icon>
+                      </button>
+                      <button
+                          class="button publishButton"
+                          onclick=${async () => {
+                              data.public = !data.public
+                              save()
+                          }}
+                          tabindex="0"
+                          title=${data.public
+                              ? 'make note private'
+                              : 'publish note'}
+                      >
+                          <ion-icon
+                              name=${`lock-${
+                                  data.public ? 'open' : 'closed'
+                              }-outline`}
+                          ></ion-icon>
+                      </button>
+                      <button
+                          class=${`button autoTagButton ${
+                              autoTagIsLoading ? 'loading' : ''
+                          }`}
+                          onclick=${async () => {
+                              if (autoTagIsLoading) return
+                              autoTagIsLoading = true
+                              update()
+                              let tagString = await fetch('api/keywords', {
+                                  method: 'POST',
+                                  mode: 'cors',
+                                  cache: 'no-cache',
+                                  credentials: 'same-origin',
+                                  headers: {
+                                      'Content-Type': 'application/json'
+                                  },
+                                  redirect: 'follow',
+                                  body: JSON.stringify({
+                                      text: data.content
+                                  })
+                              }).then(r => r.text())
+                              data.tags = data.tags.concat(tagString.split(','))
+                              autoTagIsLoading = false
+                              save()
+                          }}
+                          tabindex="0"
+                          title="auto tag note"
+                      >
+                          <ion-icon name="pricetags-outline"></ion-icon>
+                      </button>`
+                : ''}
             <button
                 class="button searchTagsButton"
                 onclick=${() => {
