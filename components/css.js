@@ -30,13 +30,6 @@ button {
     -moz-appearance: none;
 }
 
-.editPane {
-    flex: 2;
-}
-.searchPane {
-    flex: 1;
-}
-
 .topBar {
     display: flex;
     height: 50px;

@@ -111,6 +111,9 @@ export const page = () => html`
                 overflow: hidden;
             }
 
+            .editPane .topBar {
+                overflow-x: auto;
+            }
             .editPane .topBar .writerBox {
                 margin: auto 0px;
             }
@@ -162,6 +165,12 @@ export const page = () => html`
             .editPane .editor .markdown {
                 flex: 0 0 50%;
                 padding: 10px;
+            }
+            @media (max-width: 500px) {
+                .editPane .editor .edit,
+                .editPane .editor .markdown {
+                    min-width: 100vw;
+                }
             }
             h1,
             h2,

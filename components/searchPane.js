@@ -58,6 +58,7 @@ export const page = () => html`
             .searchPane {
                 display: flex;
                 flex-direction: column;
+                overflow: hidden;
             }
             .searchPane .searchBar {
                 width: 100%;

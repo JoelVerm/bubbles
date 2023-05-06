@@ -11,27 +11,52 @@ flami(
             </style>
             <style>
                 main {
-                    overflow-x: auto;
-                }
-                main {
-                    scrollbar-color: var(--color-contrast) rgba(0, 0, 0, 0);
-                }
-                main::-webkit-scrollbar {
-                    background: rgba(0, 0, 0, 0);
-                }
-                main::-webkit-scrollbar-thumb {
-                    background: var(--color-contrast);
-                }
-                main::-webkit-scrollbar-track {
-                    background: rgba(0, 0, 0, 0);
-                }
-                .appBox {
-                    min-width: 900px;
                     display: flex;
                     height: 100vh;
                 }
+                .editPaneBox {
+                    flex: 2;
+                }
+                .editPane,
+                .searchPane {
+                    height: 100%;
+                }
+                .searchPaneBox {
+                    flex: 1;
+                }
+                @media (max-width: 800px) {
+                    main {
+                        flex-direction: column;
+                    }
+                    .editPane,
+                    .searchPane {
+                        height: 90vh;
+                        width: 100%;
+                    }
+                    .editPaneBox {
+                        flex: 0 0 max(10vh, 100px);
+                        transition: flex 0.5s;
+                        overflow: hidden;
+                    }
+                    .editPaneBox .tags {
+                        border-radius: 0px !important;
+                    }
+                    .searchPaneBox {
+                        flex: 0 0 min(90vh, calc(100vh - 100px));
+                        transition: flex 0.5s;
+                        overflow: hidden;
+                    }
+                    .editPaneBox:hover {
+                        flex: 0 0 min(90vh, calc(100vh - 100px));
+                    }
+                    .editPaneBox:hover ~ .searchPaneBox {
+                        flex: 0 0 max(10vh, 100px);
+                    }
+                }
             </style>
-            <div class="appBox">${cursor()} ${editPane()} ${searchPane()}</div>
+            ${cursor()}
+            <div class="editPaneBox">${editPane()}</div>
+            <div class="searchPaneBox">${searchPane()}</div>
         </main>
     `
 )
