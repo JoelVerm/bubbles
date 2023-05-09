@@ -8,7 +8,7 @@
     "method": "POST",
     "sortNum": 10000,
     "created": "2023-05-01T13:06:33.888Z",
-    "modified": "2023-05-04T19:23:29.919Z",
+    "modified": "2023-05-09T13:41:36.926Z",
     "headers": [
       {
         "name": "Accept",
@@ -26,7 +26,7 @@
     "params": [],
     "body": {
       "type": "text",
-      "raw": "SELECT * FROM notes",
+      "raw": "SELECT * FROM users",
       "form": []
     },
     "auth": {

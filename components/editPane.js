@@ -307,6 +307,14 @@ export const page = goToSearchPane => html`
                 >
                     <ion-icon name="time-outline"></ion-icon>
                 </a>
+                <a
+                    class="button settingsButton"
+                    href="settings"
+                    tabindex="0"
+                    title="go to settings page"
+                >
+                    <ion-icon name="settings-outline"></ion-icon>
+                </a>
             </div>
             <div class="spacer"></div>
             <div class="writerBox">
