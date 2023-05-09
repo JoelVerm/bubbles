@@ -47,7 +47,6 @@ async function handleServerProcesses(path, data) {
     let serverProgram = runningServerProcesses[path]
     if (!serverProgram) {
         let serverFile = pathModule.join(serverDirName, 'server', path + '.js')
-        console.log(serverFile)
         if (existsSync(serverFile)) {
             serverProgram = (await import(`./server/${path}.js`)).main
             runningServerProcesses[path] = serverProgram

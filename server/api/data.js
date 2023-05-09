@@ -26,7 +26,6 @@ export const dbQuery = async (query, variables = undefined) =>
  * }} q
  */
 export async function query(q) {
-    console.error('query:', q)
     let note
     switch (q.type) {
         case 'add':
