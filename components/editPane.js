@@ -301,7 +301,7 @@ export const page = goToSearchPane => html`
                 </button>
                 <a
                     class="button timelineButton"
-                    href="timeline"
+                    href=${`timeline#${data.id}`}
                     tabindex="0"
                     title="view note timeline"
                 >

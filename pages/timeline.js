@@ -70,6 +70,7 @@ flami(
                                             <div class="entries">
                                                 ${notes.map(
                                                     e => html`<a
+                                                        id=${e.id}
                                                         href=${`/?id=${e.id}`}
                                                         class="entry button"
                                                     >
