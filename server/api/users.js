@@ -1,6 +1,7 @@
 import { db } from './db.js'
 import crypto from 'crypto'
 import { Buffer } from 'buffer'
+import { ResponseData } from '../../main.js'
 
 /**
  * @param {String} query
@@ -35,6 +36,10 @@ export async function verify(password, hash) {
     })
 }
 
+/**
+ * @param {import('../../main.js').RequestData} inp
+ * @returns {ResponseData}
+ */
 export async function createAccount(data) {
     const user = (
         await dbQuery('SELECT * FROM users WHERE name = $name', {
@@ -42,22 +47,26 @@ export async function createAccount(data) {
         })
     )[0]
     if (user)
-        return {
+        return new ResponseData({
             content: {
                 created: false
             }
-        }
+        })
     const passwordHash = await hash(data.password)
     await db.create('users', {
         name: data.name,
         password: passwordHash
     })
-    return {
+    return new ResponseData({
         content: {
             created: true
         }
-    }
+    })
 }
+/**
+ * @param {import('../../main.js').RequestData} inp
+ * @returns {ResponseData}
+ */
 export async function login(data, ip) {
     const user = (
         await dbQuery('SELECT * FROM users WHERE name = $name', {
@@ -65,18 +74,18 @@ export async function login(data, ip) {
         })
     )[0]
     if (!user)
-        return {
+        return new ResponseData({
             content: {
                 loggedIn: false
             }
-        }
+        })
     const passwordValid = await verify(data.password, user.password)
     if (!passwordValid)
-        return {
+        return new ResponseData({
             content: {
                 loggedIn: false
             }
-        }
+        })
     const token = crypto.randomBytes(64).toString('hex')
     await dbQuery(
         'CREATE sessions SET user = $name, ip = $ip, token = $token, time = time::now()',
@@ -86,7 +95,7 @@ export async function login(data, ip) {
             token
         }
     )
-    return {
+    return new ResponseData({
         content: {
             loggedIn: true
         },
@@ -97,7 +106,7 @@ export async function login(data, ip) {
                 path: '/'
             }
         ]
-    }
+    })
 }
 export async function checkLoggedin(data, ip, cookies) {
     if (!cookies.loginToken) return false
@@ -122,13 +131,17 @@ export async function checkLoggedin(data, ip, cookies) {
     )
     return [token, session.user]
 }
+/**
+ * @param {import('../../main.js').RequestData} inp
+ * @returns {ResponseData}
+ */
 export async function logout(data, ip, cookies) {
     if (!cookies.loginToken)
-        return {
+        return new ResponseData({
             content: {
                 loggedOut: false
             }
-        }
+        })
     let session = (
         await dbQuery(
             'SELECT * FROM sessions WHERE ip = $ip AND token = $token',
@@ -139,18 +152,18 @@ export async function logout(data, ip, cookies) {
         )
     )[0]
     if (!session)
-        return {
+        return new ResponseData({
             content: {
                 loggedOut: false
             }
-        }
+        })
     await dbQuery('DELETE sessions WHERE ip = $ip AND token = $token', {
         ip,
         token: cookies.loginToken
     })
-    return {
+    return new ResponseData({
         content: {
             loggedOut: true
         }
-    }
+    })
 }

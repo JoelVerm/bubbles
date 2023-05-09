@@ -1,5 +1,6 @@
 import { db } from './api/db.js'
 import { checkLoggedin } from './api/users.js'
+import { ResponseData } from '../main.js'
 
 /**
  * @param {String} query
@@ -13,12 +14,16 @@ const dbQuery = async (query, variables = undefined) =>
         }
     )
 
+/**
+ * @param {import('../main.js').RequestData} inp
+ * @returns {ResponseData}
+ */
 export async function main(inp) {
     const loggedIn = await checkLoggedin(inp.postData, inp.ip, inp.cookies)
     if (!loggedIn)
-        return {
+        return new ResponseData({
             redirect: '/login'
-        }
+        })
     const [cookieToken, username] = loggedIn
     const cookies = [
         {
@@ -36,8 +41,8 @@ export async function main(inp) {
             }
         )
     }
-    return {
+    return new ResponseData({
         content: {},
         cookies
-    }
+    })
 }

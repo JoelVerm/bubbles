@@ -185,6 +185,31 @@ const createCookie = ({
     (httpOnly ? '; HttpOnly' : '') +
     (sameSite != null ? `; SameSite=${sameSite}` : '')
 
+export class RequestData {
+    /**
+     * @param {{string: string}} searchParams
+     * @param {{string: string}} postData
+     * @param {{string: string}} cookies
+     * @param {String} ip
+     */
+    constructor(searchParams, postData, cookies, ip) {
+        this.searchParams = searchParams
+        this.postData = postData
+        this.cookies = cookies
+        this.ip = ip
+    }
+}
+export class ResponseData {
+    /**
+     * @param {{content?: any, redirect?: string, cookies?: Array<{ name: string, value: string, expires?:string = null,    path?:string = null, secure?:boolean = false, httpOnly?:boolean = true, domain?:string = null, maxAge?:string = null, sameSite?:string = null }>}}
+     */
+    constructor({ content, redirect, cookies }) {
+        this.content = content
+        this.redirect = redirect
+        this.cookies = cookies
+    }
+}
+
 /** @param {http.IncomingMessage} req @param {http.ServerResponse} res */
 async function handleReq(req, res) {
     let ip = req.socket.remoteAddress
@@ -209,12 +234,10 @@ async function handleReq(req, res) {
     let mimeType = getMIMEtype(path)
 
     try {
-        let response = await render(path, {
-            searchParams,
-            postData,
-            cookies,
-            ip
-        })
+        let response = await render(
+            path,
+            new RequestData(searchParams, postData, cookies, ip)
+        )
         if (!response) return
         if (response.redirect) {
             res.writeHead(302, {
