@@ -56,7 +56,6 @@ function insertUrlParam(key, value) {
     }
 }
 export const loadNote = note => {
-    console.log('load:', note)
     data = {
         type: 'update',
         id: note.id,
@@ -94,7 +93,6 @@ const save = async () => {
         document.querySelector('.editPane .editor .edit').innerText =
             data.content
     } else {
-        console.log('save:', data)
         let r = await request(data).then(r => r.json())
         data.id = r.id
         data.type = 'update'

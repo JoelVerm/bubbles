@@ -9,7 +9,7 @@ import { checkLoggedin } from './users.js'
  * @param {String} query
  * @param {Record<string, unknown>} variables
  */
-const dbQuery = async (query, variables = undefined) =>
+export const dbQuery = async (query, variables = undefined) =>
     (await db.query(query, variables).catch(console.error))?.[0].result.map(
         e => {
             e.id = e.id.split(':')[1]

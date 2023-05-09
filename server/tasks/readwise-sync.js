@@ -1,9 +1,9 @@
+#!/usr/bin/env node
+
 import { URLSearchParams } from 'url'
-import { query } from '../api/data.js'
+import { query, dbQuery } from '../api/data.js'
 
-const token = 'iYSvMH46OXNbZV0RSINEGpUr2d9E7KXrss6Pvjcoi90Uxa06fM' // use your access token here
-
-const fetchFromExportApi = async (updatedAfter = null) => {
+const fetchFromExportApi = async (token, updatedAfter = null) => {
     let fullData = []
     let nextPageCursor = null
 
@@ -34,43 +34,51 @@ const fetchFromExportApi = async (updatedAfter = null) => {
     return fullData
 }
 
-console.log('querying...')
+async function getReadwiseNotes(user) {
+    const token = user.settings?.readwiseToken
 
-// Get all of a user's books/highlights from all time
-const allData = await fetchFromExportApi()
+    if (token == null) return
 
-console.log('converting...')
+    // Get all of a user's books/highlights from all time
+    const allData = await fetchFromExportApi(token, user.readwise_last_updated)
 
-const notes = allData
-    .map(item =>
-        item.highlights.map(highlight => ({
-            content: `# ${item.readable_title}
+    const notes = allData
+        .map(item =>
+            item.highlights.map(highlight => ({
+                content: `# ${item.readable_title}
 
 ${highlight.text}
 
 [link](${highlight.url})
 `,
-            tags: [
-                item.category,
-                item.source,
-                item.author,
-                ...item.book_tags,
-                ...highlight.tags
-            ],
-            time_created: highlight.created_at,
-            time_updated: highlight.updated_at
-        }))
+                tags: [
+                    item.category,
+                    item.source,
+                    item.author,
+                    ...item.book_tags,
+                    ...highlight.tags
+                ],
+                time_created: highlight.created_at,
+                time_updated: highlight.updated_at,
+                public: false
+            }))
+        )
+        .flat()
+
+    await dbQuery(
+        'UPDATE users SET readwise_last_updated = time::now() WHERE name = $username',
+        { username: user.name }
     )
-    .flat()
+    await Promise.all(
+        notes.map(note => query({ type: 'add', ...note, username: user.name }))
+    )
+}
 
-console.log('adding to database...')
+async function syncAllUsers() {
+    const users = await dbQuery('SELECT * FROM users')
+    await Promise.all(users.map(user => getReadwiseNotes(user)))
+}
 
-await Promise.all(
-    notes.map(async note => await query({ type: 'add', ...note }))
-)
-
-console.log('finished!')
-
-// Later, if you want to get new highlights updated since your last fetch of allData, do this.
-// const lastFetchWasAt = new Date(Date.now() - 24 * 60 * 60 * 1000) // use your own stored date
-// const newData = await fetchFromExportApi(lastFetchWasAt.toISOString())
+const msInDay = 24 * 60 * 60 * 1000
+syncAllUsers()
+setInterval(syncAllUsers, msInDay)
