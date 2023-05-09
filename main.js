@@ -3,7 +3,6 @@ import { createServer } from 'http'
 import { Buffer } from 'buffer'
 import { promises, existsSync } from 'fs'
 import { URL } from 'url'
-import { spawn } from 'child_process'
 import process from 'process'
 
 import * as pathModule from 'path'
@@ -46,40 +45,15 @@ const runningServerProcesses = {}
 
 async function handleServerProcesses(path, data) {
     let serverProgram = runningServerProcesses[path]
-    let serverResponse = ''
     if (!serverProgram) {
-        let serverPath = pathModule.join(serverDirName, 'server', path)
-        const dirContents = await promises.readdir(
-            pathModule.dirname(serverPath)
-        )
-        const basePath = pathModule.basename(serverPath)
-        const serverFileExtension = dirContents
-            .find(e => e.startsWith(basePath))
-            ?.slice(basePath.length)
-        if (serverFileExtension) {
-            serverProgram = spawn(
-                pathModule.join(
-                    serverDirName,
-                    'server',
-                    `${path}${serverFileExtension}`
-                ),
-                ['']
-            )
+        let serverFile = pathModule.join(serverDirName, 'server', path + '.js')
+        console.log(serverFile)
+        if (existsSync(serverFile)) {
+            serverProgram = (await import(`./server/${path}.js`)).main
             runningServerProcesses[path] = serverProgram
-            serverProgram.stderr.on('data', data =>
-                console.error(data.toString())
-            )
-            serverProgram.once(
-                'close',
-                () => delete runningServerProcesses[path]
-            )
         } else return ''
     }
-    serverProgram.stdin.write(JSON.stringify(data) + '\n')
-    serverResponse = await new Promise(resolve => {
-        serverProgram.stdout.once('data', data => resolve(data.toString()))
-    })
-    return serverResponse
+    return await serverProgram(data).catch(console.error)
 }
 
 /**
@@ -106,15 +80,15 @@ async function render(path, data) {
     if (!existsSync(pagePath)) return null
     let serverResponse = await handleServerProcesses(path, data)
     let response = {}
-    try {
-        response = JSON.parse(serverResponse)
-    } catch {
+    if (serverResponse instanceof Object) {
+        response = serverResponse
+    } else {
         response.content = serverResponse
     }
     if (response.content != null) {
-        if (!path.includes('api') && response.content != null)
-            response.content = renderHtml(path, response.content)
-        else response.content = JSON.stringify(response.content)
+        if (path.includes('api'))
+            response.content = JSON.stringify(response.content)
+        else response.content = renderHtml(path, response.content)
     }
     return response
 }

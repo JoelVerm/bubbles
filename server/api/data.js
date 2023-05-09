@@ -1,7 +1,3 @@
-#!/usr/bin/env node
-
-import { fileURLToPath } from 'url'
-import process from 'process'
 import { db } from './db.js'
 import { checkLoggedin } from './users.js'
 
@@ -115,25 +111,19 @@ export async function query(q) {
     }
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-    const stdin = process.openStdin()
-
-    stdin.addListener('data', async function (inp) {
-        inp = JSON.parse(inp)
-        const loggedIn = await checkLoggedin(inp.postData, inp.ip, inp.cookies)
-        if (!loggedIn) return {}
-        const [cookieToken, username] = loggedIn
-        const note = await query({ ...inp.postData, username })
-        let result = {
-            content: note,
-            cookies: [
-                {
-                    name: 'loginToken',
-                    value: cookieToken,
-                    path: '/'
-                }
-            ]
-        }
-        console.log(JSON.stringify(result))
-    })
+export async function main(inp) {
+    const loggedIn = await checkLoggedin(inp.postData, inp.ip, inp.cookies)
+    if (!loggedIn) return {}
+    const [cookieToken, username] = loggedIn
+    const note = await query({ ...inp.postData, username })
+    return {
+        content: note,
+        cookies: [
+            {
+                name: 'loginToken',
+                value: cookieToken,
+                path: '/'
+            }
+        ]
+    }
 }

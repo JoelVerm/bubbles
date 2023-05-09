@@ -1,8 +1,5 @@
-#!/usr/bin/env node
-
 import { db } from './api/db.js'
 import { checkLoggedin } from './api/users.js'
-import process from 'process'
 
 /**
  * @param {String} query
@@ -16,7 +13,7 @@ const dbQuery = async (query, variables = undefined) =>
         }
     )
 
-export async function getData(inp) {
+export async function main(inp) {
     const loggedIn = await checkLoggedin(inp.postData, inp.ip, inp.cookies)
     if (!loggedIn)
         return {
@@ -44,9 +41,3 @@ export async function getData(inp) {
         cookies
     }
 }
-
-const stdin = process.openStdin()
-
-stdin.addListener('data', async function (inp) {
-    console.log(JSON.stringify(await getData(JSON.parse(inp))))
-})

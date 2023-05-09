@@ -1,11 +1,8 @@
-#!/usr/bin/env node
-
 import { query } from './api/data.js'
 import { checkLoggedin } from './api/users.js'
-import process from 'process'
 
-export async function getData(data) {
-    const loggedIn = await checkLoggedin(data.postData, data.ip, data.cookies)
+export async function main(inp) {
+    const loggedIn = await checkLoggedin(inp.postData, inp.ip, inp.cookies)
     if (!loggedIn)
         return {
             redirect: '/login'
@@ -18,7 +15,7 @@ export async function getData(data) {
             path: '/'
         }
     ]
-    let id = data?.searchParams?.id
+    let id = inp?.searchParams?.id
     if (!id) {
         return {
             content: {
@@ -49,9 +46,3 @@ export async function getData(data) {
         cookies
     }
 }
-
-const stdin = process.openStdin()
-
-stdin.addListener('data', async function (inp) {
-    console.log(JSON.stringify(await getData(JSON.parse(inp))))
-})

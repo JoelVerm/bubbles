@@ -79,6 +79,8 @@ async function syncAllUsers() {
     await Promise.all(users.map(user => getReadwiseNotes(user)))
 }
 
-const msInDay = 24 * 60 * 60 * 1000
-syncAllUsers()
-setInterval(syncAllUsers, msInDay)
+export function main() {
+    const msInDay = 24 * 60 * 60 * 1000
+    syncAllUsers()
+    setInterval(syncAllUsers, msInDay)
+}
