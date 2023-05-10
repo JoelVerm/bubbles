@@ -86,13 +86,13 @@ export async function login(data, ip) {
                 loggedIn: false
             }
         })
-    const token = crypto.randomBytes(64).toString('hex')
+    const loginToken = crypto.randomBytes(64).toString('hex')
     await dbQuery(
-        'CREATE sessions SET user = $name, ip = $ip, token = $token, time = time::now()',
+        'CREATE sessions SET user = $name, ip = $ip, token = $loginToken, time = time::now()',
         {
             name: data.name,
             ip,
-            token
+            loginToken
         }
     )
     return new ResponseData({
@@ -102,7 +102,7 @@ export async function login(data, ip) {
         cookies: [
             {
                 name: 'loginToken',
-                value: token,
+                value: loginToken,
                 path: '/'
             }
         ]
@@ -112,20 +112,20 @@ export async function checkLoggedin(data, ip, cookies) {
     if (!cookies.loginToken) return false
     let session = (
         await dbQuery(
-            'SELECT * FROM sessions WHERE ip = $ip AND token = $token',
+            'SELECT * FROM sessions WHERE ip = $ip AND token = $loginToken',
             {
                 ip,
-                token: cookies.loginToken
+                loginToken: cookies.loginToken
             }
         )
     )[0]
     if (!session) return false
     const token = crypto.randomBytes(64).toString('hex')
     await dbQuery(
-        'UPDATE sessions SET token = $newToken, time = time::now() WHERE ip = $ip AND token = $token',
+        'UPDATE sessions SET token = $newToken, time = time::now() WHERE ip = $ip AND token = $loginToken',
         {
             ip,
-            token: cookies.loginToken,
+            loginToken: cookies.loginToken,
             newToken: token
         }
     )
@@ -144,10 +144,10 @@ export async function logout(data, ip, cookies) {
         })
     let session = (
         await dbQuery(
-            'SELECT * FROM sessions WHERE ip = $ip AND token = $token',
+            'SELECT * FROM sessions WHERE ip = $ip AND token = $loginToken',
             {
                 ip,
-                token: cookies.loginToken
+                loginToken: cookies.loginToken
             }
         )
     )[0]
@@ -157,9 +157,9 @@ export async function logout(data, ip, cookies) {
                 loggedOut: false
             }
         })
-    await dbQuery('DELETE sessions WHERE ip = $ip AND token = $token', {
+    await dbQuery('DELETE sessions WHERE ip = $ip AND token = $loginToken', {
         ip,
-        token: cookies.loginToken
+        loginToken: cookies.loginToken
     })
     return new ResponseData({
         content: {

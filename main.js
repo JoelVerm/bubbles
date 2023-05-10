@@ -265,7 +265,7 @@ async function handleReq(req, res) {
 export const serverOptions = {
     maxRequestsPerSecond: 100,
     timeoutMinutes: 5,
-    port: 8888
+    port: process.env.PORT ?? 8888
 }
 
 function start() {
