@@ -38,10 +38,18 @@ export async function query(q) {
                     writer: q.username,
                     public: q.public ?? false
                 })
-                .catch(console.error)
+                .catch(e => console.error(`Error<data.js::add>\n${e.message}`))
             break
         case 'update':
-            note = (await db.select(`notes:${q.id}`).catch(console.error))?.[0]
+            note = (
+                await db
+                    .select(`notes:${q.id}`)
+                    .catch(e =>
+                        console.error(
+                            `Error<data.js::update:select>\n${e.message}`
+                        )
+                    )
+            )?.[0]
             if (!note)
                 return await query({
                     ...q,
@@ -51,22 +59,44 @@ export async function query(q) {
             if (q.tags != null) note.tags = q.tags
             if (q.public != null) note.public = q.public
             note.time_updated = new Date().toISOString()
-            await db.update(`notes:${q.id}`, note).catch(console.error)
+            await db
+                .update(`notes:${q.id}`, note)
+                .catch(e =>
+                    console.error(`Error<data.js::update:update>\n${e.message}`)
+                )
             break
         case 'get':
-            note = (await db.select(`notes:${q.id}`).catch(console.error))?.[0]
+            note = (
+                await db
+                    .select(`notes:${q.id}`)
+                    .catch(e =>
+                        console.error(`Error<data.js::get>\n${e.message}`)
+                    )
+            )?.[0]
             if (!note || !(note.writer === q.username || note.public))
                 return {
                     ERROR: `Unable to retrieve note with id ${q.id}`
                 }
             break
         case 'delete':
-            note = (await db.select(`notes:${q.id}`).catch(console.error))?.[0]
+            note = (
+                await db
+                    .select(`notes:${q.id}`)
+                    .catch(e =>
+                        console.error(
+                            `Error<data.js::delete:select>\n${e.message}`
+                        )
+                    )
+            )?.[0]
             if (!note || !(note.writer === q.username || note.public))
                 return {
                     ERROR: `Unable to delete note with id ${q.id}`
                 }
-            await db.delete(`notes:${q.id}`).catch(console.error)
+            await db
+                .delete(`notes:${q.id}`)
+                .catch(e =>
+                    console.error(`Error<data.js::delete:delete>\n${e.message}`)
+                )
             return { SUCCESS: `Deleted node with id ${q.id}` }
         case 'random':
             return (
@@ -74,6 +104,8 @@ export async function query(q) {
                     await dbQuery(
                         'SELECT * FROM notes WHERE writer = $name ORDER BY RAND() LIMIT 1',
                         { name: q.username }
+                    ).catch(e =>
+                        console.error(`Error<data.js::random>\n${e.message}`)
                     )
                 )?.[0] ?? { ERROR: 'Unable to retrieve random note' }
             )
@@ -95,6 +127,8 @@ export async function query(q) {
                         content: q.content,
                         name: q.username
                     }
+                ).catch(e =>
+                    console.error(`Error<data.js::query>\n${e.message}`)
                 )) ?? { ERROR: 'Unable to find matching search results' }
             )
         case 'timeline':
@@ -102,6 +136,8 @@ export async function query(q) {
                 (await dbQuery(
                     'SELECT string::slice(content, 0, 50) as firstWords, time_created, id FROM notes WHERE writer = $name ORDER BY time_created DESC',
                     { name: q.username }
+                ).catch(e =>
+                    console.error(`Error<data.js::timeline>\n${e.message}`)
                 )) ?? { ERROR: 'Unable to get the timeline' }
             )
     }
