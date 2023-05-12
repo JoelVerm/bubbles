@@ -313,6 +313,14 @@ export const page = goToSearchPane => html`
                 >
                     <ion-icon name="settings-outline"></ion-icon>
                 </a>
+                <a
+                    class="button notificationsButton"
+                    href="notifications"
+                    tabindex="0"
+                    title="go to notifications page"
+                >
+                    <ion-icon name="notifications-outline"></ion-icon>
+                </a>
             </div>
             <div class="spacer"></div>
             <div class="writerBox">
