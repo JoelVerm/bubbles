@@ -85,9 +85,10 @@ async function render(path, data) {
         response.content = serverResponse
     }
     if (response.content != null) {
-        if (path.includes('api'))
-            response.content = JSON.stringify(response.content)
-        else response.content = renderHtml(path, response.content)
+        if (path.includes('api')) {
+            if (!(typeof response.content === 'string'))
+                response.content = JSON.stringify(response.content)
+        } else response.content = renderHtml(path, response.content)
     }
     return response
 }
