@@ -38,18 +38,20 @@ export async function query(q) {
                     writer: q.username,
                     public: q.public ?? false
                 })
-                .catch(e => console.error(`Error<data.js::add>\n${e.message}`))
+                .catch(e =>
+                    console.error(`Error<data.js::add>\n\t${e.message}`)
+                )
+            if (note[0]) note = note[0]
             break
         case 'update':
-            note = (
-                await db
-                    .select(`notes:${q.id}`)
-                    .catch(e =>
-                        console.error(
-                            `Error<data.js::update:select>\n${e.message}`
-                        )
+            note = await db
+                .select(`notes:${q.id}`)
+                .catch(e =>
+                    console.error(
+                        `Error<data.js::update:select>\n\t${e.message}`
                     )
-            )?.[0]
+                )
+            if (note[0]) note = note[0]
             if (!note)
                 return await query({
                     ...q,
@@ -62,32 +64,32 @@ export async function query(q) {
             await db
                 .update(`notes:${q.id}`, note)
                 .catch(e =>
-                    console.error(`Error<data.js::update:update>\n${e.message}`)
+                    console.error(
+                        `Error<data.js::update:update>\n\t${e.message}`
+                    )
                 )
             break
         case 'get':
-            note = (
-                await db
-                    .select(`notes:${q.id}`)
-                    .catch(e =>
-                        console.error(`Error<data.js::get>\n${e.message}`)
-                    )
-            )?.[0]
+            note = await db
+                .select(`notes:${q.id}`)
+                .catch(e =>
+                    console.error(`Error<data.js::get>\n\t${e.message}`)
+                )
+            if (note[0]) note = note[0]
             if (!note || !(note.writer === q.username || note.public))
                 return {
                     ERROR: `Unable to retrieve note with id ${q.id}`
                 }
             break
         case 'delete':
-            note = (
-                await db
-                    .select(`notes:${q.id}`)
-                    .catch(e =>
-                        console.error(
-                            `Error<data.js::delete:select>\n${e.message}`
-                        )
+            note = await db
+                .select(`notes:${q.id}`)
+                .catch(e =>
+                    console.error(
+                        `Error<data.js::delete:select>\n\t${e.message}`
                     )
-            )?.[0]
+                )
+            if (note[0]) note = note[0]
             if (!note || !(note.writer === q.username || note.public))
                 return {
                     ERROR: `Unable to delete note with id ${q.id}`
@@ -95,7 +97,9 @@ export async function query(q) {
             await db
                 .delete(`notes:${q.id}`)
                 .catch(e =>
-                    console.error(`Error<data.js::delete:delete>\n${e.message}`)
+                    console.error(
+                        `Error<data.js::delete:delete>\n\t${e.message}`
+                    )
                 )
             return { SUCCESS: `Deleted node with id ${q.id}` }
         case 'random':
@@ -105,7 +109,7 @@ export async function query(q) {
                         'SELECT * FROM notes WHERE writer = $name ORDER BY RAND() LIMIT 1',
                         { name: q.username }
                     ).catch(e =>
-                        console.error(`Error<data.js::random>\n${e.message}`)
+                        console.error(`Error<data.js::random>\n\t${e.message}`)
                     )
                 )?.[0] ?? { ERROR: 'Unable to retrieve random note' }
             )
@@ -128,7 +132,7 @@ export async function query(q) {
                         name: q.username
                     }
                 ).catch(e =>
-                    console.error(`Error<data.js::query>\n${e.message}`)
+                    console.error(`Error<data.js::query>\n\t${e.message}`)
                 )) ?? { ERROR: 'Unable to find matching search results' }
             )
         case 'timeline':
@@ -137,7 +141,7 @@ export async function query(q) {
                     'SELECT string::slice(content, 0, 50) as firstWords, time_created, id FROM notes WHERE writer = $name ORDER BY time_created DESC',
                     { name: q.username }
                 ).catch(e =>
-                    console.error(`Error<data.js::timeline>\n${e.message}`)
+                    console.error(`Error<data.js::timeline>\n\t${e.message}`)
                 )) ?? { ERROR: 'Unable to get the timeline' }
             )
     }
